@@ -3,10 +3,15 @@ import PropTypes from 'prop-types';
 import { Box, Typography, IconButton, Button, TextField } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 import { Formik, Form, Field } from 'formik';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginSuccess, authFailure } from '../../../redux/slices/authSlice';
 import { styles } from './styles';
 import validationLoginForm from '../../../utils/validationSchemas/validationLoginForm.js';
 
 const LoginForm = ({ onClose, onShowRegister }) => {
+    const dispatch = useDispatch();
+    const { error } = useSelector((state) => state.auth);
+
     return (
         <Box sx={styles.popupContainer}>
             <Box sx={styles.popupHeader}>
@@ -19,8 +24,13 @@ const LoginForm = ({ onClose, onShowRegister }) => {
                 initialValues={{ login: '', password: '' }}
                 validationSchema={validationLoginForm}
                 onSubmit={(values, { setSubmitting }) => {
-                    console.log('Login values:', values);
+                    if (values.login === 'newuser@test.com' && values.password === '123123') {
+                        dispatch(loginSuccess({ email: values.login }));
+                    } else {
+                        dispatch(authFailure('Неправильні облікові дані'));
+                    }
                     setSubmitting(false);
+                    onClose();
                 }}
             >
                 {({ isSubmitting, errors, touched }) => (
@@ -29,6 +39,11 @@ const LoginForm = ({ onClose, onShowRegister }) => {
                             <Typography variant="body2" color="textSecondary">
                                 Для входу введіть свою email адресу
                             </Typography>
+                            {error && (
+                                <Typography variant="body2" color="error">
+                                    {error}
+                                </Typography>
+                            )}
                             <Field
                                 as={TextField}
                                 name="login"

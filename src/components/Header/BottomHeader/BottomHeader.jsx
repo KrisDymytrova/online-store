@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { AppBar, Toolbar, Badge, Box, Typography, IconButton } from '@mui/material';
-import { ShoppingCart, Favorite, AccountCircle } from '@mui/icons-material';
+import { AppBar, Toolbar, Badge, Box, Typography, IconButton, Button, Divider } from '@mui/material';
+import { ShoppingCart, Favorite, AccountCircle, ViewList } from '@mui/icons-material';
+import { useDispatch, useSelector } from 'react-redux';
+import { loadUserFromCookies, logout } from '../../../redux/slices/authSlice.js';
 import SearchBar from '../../UI/SearchBar';
 import CategoriesDropdown from '../../Categories/CategoriesDropdown';
 import AuthModal from '../../Auth/AuthModal';
+import ProfileDropdown from '../../UserProfile/ProfileDropdown';
 import { styles } from './styles.js';
 
 const BottomHeader = ({ cartCount, totalAmount }) => {
@@ -13,6 +16,12 @@ const BottomHeader = ({ cartCount, totalAmount }) => {
     const [openAuthModal, setOpenAuthModal] = useState(false);
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { isAuthenticated, user } = useSelector((state) => state.auth);
+
+    useEffect(() => {
+        dispatch(loadUserFromCookies());
+    }, [dispatch]);
 
     const handleSelectCategory = (category) => {
         setSelectedCategory(category);
@@ -34,6 +43,10 @@ const BottomHeader = ({ cartCount, totalAmount }) => {
         setOpenAuthModal(false);
     };
 
+    const handleLogout = () => {
+        dispatch(logout());
+    };
+
     return (
         <>
             <AppBar sx={styles.appBar}>
@@ -43,12 +56,23 @@ const BottomHeader = ({ cartCount, totalAmount }) => {
                     </Box>
                     <SearchBar />
                     <Box sx={styles.rightBox}>
-                        <IconButton sx={styles.iconButton} onClick={handleAuthModalOpen}>
-                            <AccountCircle />
-                        </IconButton>
+                        {isAuthenticated ? (
+                            <ProfileDropdown onLogout={handleLogout} />
+                        ) : (
+                            <Button
+                                aria-controls="categories-menu"
+                                aria-haspopup="true"
+                                onClick={handleAuthModalOpen}
+                                sx={styles.iconButtonAuth}
+                            >
+                                Увійти
+                            </Button>
+                        )}
+                        <Divider orientation="vertical" flexItem sx={styles.divider} />
                         <IconButton sx={styles.iconButton} onClick={handleFavoriteClick}>
                             <Favorite />
                         </IconButton>
+                        <Divider orientation="vertical" flexItem sx={styles.divider} />
                         <IconButton sx={styles.iconButton} onClick={handleCartClick}>
                             <Badge badgeContent={cartCount} color="secondary">
                                 <ShoppingCart />

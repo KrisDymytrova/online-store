@@ -3,10 +3,32 @@ import PropTypes from 'prop-types';
 import { Box, Typography, IconButton, Button, TextField } from '@mui/material';
 import { Close as CloseIcon } from '@mui/icons-material';
 import { Formik, Form, Field } from 'formik';
-import { styles } from './styles';
+import InputMask from 'react-input-mask';
+import { useDispatch, useSelector } from 'react-redux';
+import { registerSuccess, authFailure } from '../../../redux/slices/authSlice';
 import validationRegisterForm from '../../../utils/validationSchemas/validationRegisterForm.js';
+import { styles } from './styles';
 
 const RegisterForm = ({ onClose, onShowLogin }) => {
+    const dispatch = useDispatch();
+    const { error } = useSelector((state) => state.auth);
+
+    const handleSubmit = async (values, { setSubmitting, setErrors }) => {
+        try {
+            if (values.email === 'newuser@test.com') {
+                dispatch(registerSuccess({ email: values.email }));
+                onClose();
+            } else {
+                throw new Error('Помилка при реєстрації');
+            }
+        } catch (error) {
+            setErrors({ submit: error.message });
+            dispatch(authFailure(error.message));
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
     return (
         <Box sx={styles.popupContainer}>
             <Box sx={styles.popupHeader}>
@@ -25,10 +47,7 @@ const RegisterForm = ({ onClose, onShowLogin }) => {
                     confirmPassword: ''
                 }}
                 validationSchema={validationRegisterForm}
-                onSubmit={(values, { setSubmitting }) => {
-                    console.log('Register values:', values);
-                    setSubmitting(false);
-                }}
+                onSubmit={handleSubmit}
             >
                 {({ isSubmitting, errors, touched }) => (
                     <Form>
@@ -53,16 +72,29 @@ const RegisterForm = ({ onClose, onShowLogin }) => {
                                 helperText={touched.lastName && errors.lastName}
                                 sx={styles.inputField}
                             />
-                            <Field
-                                as={TextField}
-                                name="phoneNumber"
-                                label="Номер телефону"
-                                variant="outlined"
-                                fullWidth
-                                error={touched.phoneNumber && Boolean(errors.phoneNumber)}
-                                helperText={touched.phoneNumber && errors.phoneNumber}
-                                sx={styles.inputField}
-                            />
+                            <Field name="phoneNumber">
+                                {({ field, form }) => (
+                                    <InputMask
+                                        mask="+380 99 999 99 99"
+                                        value={field.value}
+                                        onChange={(e) => {
+                                            form.setFieldValue(field.name, e.target.value);
+                                        }}
+                                    >
+                                        {(inputProps) => (
+                                            <TextField
+                                                {...inputProps}
+                                                label="Номер телефону"
+                                                variant="outlined"
+                                                fullWidth
+                                                error={touched.phoneNumber && Boolean(errors.phoneNumber)}
+                                                helperText={touched.phoneNumber && errors.phoneNumber}
+                                                sx={styles.inputField}
+                                            />
+                                        )}
+                                    </InputMask>
+                                )}
+                            </Field>
                             <Field
                                 as={TextField}
                                 name="email"
@@ -95,6 +127,11 @@ const RegisterForm = ({ onClose, onShowLogin }) => {
                                 helperText={touched.confirmPassword && errors.confirmPassword}
                                 sx={styles.inputField}
                             />
+                            {errors.submit && (
+                                <Typography variant="body2" color="error">
+                                    {errors.submit}
+                                </Typography>
+                            )}
                         </Box>
                         <Box sx={styles.popupActions}>
                             <Button

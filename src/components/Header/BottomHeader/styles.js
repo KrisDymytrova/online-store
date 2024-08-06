@@ -8,17 +8,32 @@ export const styles = {
         display: 'flex',
         justifyContent: 'space-between',
         width: '1400px',
-        height: 'inherit',
-        margin: '6px auto',
+        margin: 'auto',
         padding: '0 16px',
     },
     rightBox: {
         display: 'flex',
         alignItems: 'center',
     },
-    iconButton: {
+    divider: {
+        backgroundColor: '#fff',
+        margin: '0 16px',
+        width: '2px',
+    },
+    iconButtonAuth: {
+        textTransform: 'none',
+        backgroundColor: '#388e3c',
         color: '#fff',
-        marginLeft: '8px',
+        '&:hover': {
+            backgroundColor: '#388e3c',
+        },
+    },
+    iconButton: {
+        backgroundColor: '#4caf50',
+        color: '#fff',
+        '&:hover': {
+            backgroundColor: '#388e3c',
+        },
     },
     amountText: {
         color: '#fff',

@@ -38,7 +38,7 @@ const FavProductList = () => {
 
     return (
         <Box>
-            <Typography variant="h4" gutterBottom sx={styles.header}>Обране </Typography>
+            <Typography variant="h4" gutterBottom sx={styles.header}>Обрані товари</Typography>
             <Box sx={styles.productList}>
                 {favoriteProducts.length > 0 ? (
                     favoriteProducts.map((product) => (
