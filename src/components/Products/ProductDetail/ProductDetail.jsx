@@ -1,16 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import CartPopup from '../../ShoppingCart/CartPopup';
 import ViewedProductsList from '../ViewedProductsList';
-import { Box, Typography, Button, IconButton, Divider } from '@mui/material';
-import { FavoriteBorder, ShoppingCart, Payment, Verified } from '@mui/icons-material';
-import { useDispatch } from 'react-redux';
+import { Box, Typography, Button, IconButton, Divider, Snackbar } from '@mui/material';
+import { FavoriteBorder, Favorite, ShoppingCart, Payment, Verified, Check } from '@mui/icons-material';
+import { useDispatch, useSelector } from 'react-redux';
 import { addItem } from '../../../redux/slices/cartSlice';
+import { addFavorite, removeFavorite } from '../../../redux/slices/favoritesSlice';
 import { styles } from './styles.js';
 
 const ProductDetail = ({ imageUrl, title, rating, ratingCount, code, description, oldPrice, newPrice, discount, bonus }) => {
     const [showPopup, setShowPopup] = useState(false);
+    const [showSnackbar, setShowSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [isInCart, setIsInCart] = useState(false);
     const dispatch = useDispatch();
+    const favorites = useSelector((state) => state.favorites);
+    const cartItems = useSelector((state) => state.cart.items);
+    const isFavorite = favorites.some(fav => fav.code === code);
+
+    useEffect(() => {
+        const isItemInCart = cartItems.some(item => item.code === code);
+        setIsInCart(isItemInCart);
+    }, [cartItems, code]);
 
     const handleAddToCart = () => {
         const product = {
@@ -24,10 +36,27 @@ const ProductDetail = ({ imageUrl, title, rating, ratingCount, code, description
         };
         dispatch(addItem(product));
         setShowPopup(true);
+        setIsInCart(true);
+    };
+
+    const handleAddFavorite = () => {
+        const product = { imageUrl, code, title, newPrice, oldPrice, discount };
+        if (isFavorite) {
+            dispatch(removeFavorite(code));
+            setSnackbarMessage('Товар успішно видалений з обраного');
+        } else {
+            dispatch(addFavorite(product));
+            setSnackbarMessage('Товар успішно доданий до обраного');
+        }
+        setShowSnackbar(true);
     };
 
     const handleClosePopup = () => {
         setShowPopup(false);
+    };
+
+    const handleCloseSnackbar = () => {
+        setShowSnackbar(false);
     };
 
     return (
@@ -40,8 +69,8 @@ const ProductDetail = ({ imageUrl, title, rating, ratingCount, code, description
                     <Box sx={styles.titleFavorite}>
                         <Typography sx={styles.title}>{title}</Typography>
                         <Box sx={styles.iconHeart}>
-                            <IconButton>
-                                <FavoriteBorder />
+                            <IconButton onClick={handleAddFavorite}>
+                                {isFavorite ? <Favorite /> : <FavoriteBorder />}
                             </IconButton>
                         </Box>
                     </Box>
@@ -66,9 +95,13 @@ const ProductDetail = ({ imageUrl, title, rating, ratingCount, code, description
                             <Typography variant="body2" sx={styles.bonus}>+{bonus} ₴ на бонусний рахунок</Typography>
                         </Box>
                         <Box sx={styles.buttonsContainer}>
-                            <Button variant="contained" sx={styles.buyButton} onClick={handleAddToCart}>
-                                <ShoppingCart />
-                                Купити
+                            <Button
+                                variant="contained"
+                                sx={styles.buyButton}
+                                onClick={handleAddToCart}
+                                endIcon={isInCart ? <Check /> : <ShoppingCart />}
+                            >
+                                {isInCart ? 'В кошику' : 'Купити'}
                             </Button>
                         </Box>
                     </Box>
@@ -99,6 +132,12 @@ const ProductDetail = ({ imageUrl, title, rating, ratingCount, code, description
                 <Typography variant="h5">Переглянуті товари</Typography>
                 <ViewedProductsList />
             </Box>
+            <Snackbar
+                open={showSnackbar}
+                autoHideDuration={3000}
+                onClose={handleCloseSnackbar}
+                message={snackbarMessage}
+            />
         </Box>
     );
 };
@@ -117,3 +156,4 @@ ProductDetail.propTypes = {
 };
 
 export default ProductDetail;
+

@@ -16,11 +16,6 @@ export const styles = {
         display: 'flex',
         alignItems: 'center',
     },
-    loginButton: {
-        color: '#fff',
-        textTransform: 'none',
-        marginRight: '16px',
-    },
     iconButton: {
         color: '#fff',
         marginLeft: '8px',

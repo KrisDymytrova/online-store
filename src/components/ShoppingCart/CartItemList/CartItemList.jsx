@@ -40,7 +40,6 @@ const CartItemList = ({ items }) => {
             {items.map(item => {
                 const totalOldPrice = (item.oldPrice * item.quantity).toFixed(2);
                 const totalNewPrice = (item.newPrice * item.quantity).toFixed(2);
-                const discountAmount = (item.oldPrice * item.quantity - totalNewPrice).toFixed(2);
 
                 return (
                     <Box key={item.id} sx={styles.item}>
@@ -112,4 +111,3 @@ CartItemList.propTypes = {
 };
 
 export default CartItemList;
-

@@ -9,5 +9,9 @@ export const styles = {
         fontSize: '24px',
         fontWeight: 'bold',
         marginBottom: '20px',
+    },
+    emptyFav: {
+        textAlign: 'center',
+        margin: '200px auto',
     }
 };

@@ -106,4 +106,12 @@ export const styles = {
         justifyContent: 'space-between',
         marginBottom: '8px',
     },
+    iconCart: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        '& .MuiButton-endIcon': {
+            display: 'flex',
+            margin: '0px',
+        },
+    },
 };

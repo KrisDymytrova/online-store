@@ -1,7 +1,7 @@
 export const styles = {
     productList: {
         display: 'flex',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-start',
         flexWrap: 'wrap',
         gap: '10px',
     },

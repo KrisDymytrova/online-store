@@ -18,11 +18,11 @@ const CategoryPage = () => {
     };
 
     return (
-        <Box style={styles.container}>
-            <Typography variant="h4" gutterBottom>
+        <Box>
+            <Typography variant="h4" gutterBottom sx={styles.header}>
                 {categoryName.charAt(0).toUpperCase() + categoryName.slice(1)}
             </Typography>
-            <Grid container spacing={2}>
+            <Grid container spacing={2} sx={styles.productList}>
                 {products && products.map((product) => (
                     <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
                         <ProductCard

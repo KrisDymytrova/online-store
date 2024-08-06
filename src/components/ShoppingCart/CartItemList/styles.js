@@ -4,6 +4,10 @@ export const styles = {
         padding: '20px',
         borderRadius: '8px',
     },
+    emptyCart: {
+        textAlign: 'center',
+        margin: '200px auto',
+    },
     header: {
         display: 'flex',
         alignItems: 'center',

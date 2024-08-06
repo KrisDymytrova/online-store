@@ -1,8 +1,7 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
-import { useGetProductsQuery } from '../../redux/productsApi/productsApi.js';
 import BaseTemplate from '../../templates/BaseTemplate';
 import ContentContainer from "../../templates/ContentContainer";
+import FavProductList from "../../components/Products/FavProductsList";
 
 const ProductDetailPage = () => {
 
@@ -17,7 +16,7 @@ const ProductDetailPage = () => {
             showBottomFooter={true}
         >
             <ContentContainer>
-
+                <FavProductList />
             </ContentContainer>
         </BaseTemplate>
     );
