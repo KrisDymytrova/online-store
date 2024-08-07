@@ -1,26 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Box, Typography, IconButton, Button, TextField } from '@mui/material';
-import { Close as CloseIcon } from '@mui/icons-material';
+import { Box, Typography, IconButton, Button, TextField, InputAdornment } from '@mui/material';
+import { Close as CloseIcon, Visibility, VisibilityOff } from '@mui/icons-material';
 import { Formik, Form, Field } from 'formik';
 import InputMask from 'react-input-mask';
 import { useDispatch, useSelector } from 'react-redux';
 import { registerSuccess, authFailure } from '../../../redux/slices/authSlice';
 import validationRegisterForm from '../../../utils/validationSchemas/validationRegisterForm.js';
+import { saveUserData } from '../../../utils/localStorage';
 import { styles } from './styles';
 
 const RegisterForm = ({ onClose, onShowLogin }) => {
     const dispatch = useDispatch();
     const { error } = useSelector((state) => state.auth);
+    const [showPassword, setShowPassword] = useState(false);
+
+    const handleClickShowPassword = () => setShowPassword(!showPassword);
 
     const handleSubmit = async (values, { setSubmitting, setErrors }) => {
         try {
-            if (values.email === 'newuser@test.com') {
-                dispatch(registerSuccess({ email: values.email }));
-                onClose();
-            } else {
-                throw new Error('Помилка при реєстрації');
-            }
+            saveUserData(values);
+            dispatch(registerSuccess({ email: values.email }));
+            onClose();
         } catch (error) {
             setErrors({ submit: error.message });
             dispatch(authFailure(error.message));
@@ -80,6 +81,7 @@ const RegisterForm = ({ onClose, onShowLogin }) => {
                                         onChange={(e) => {
                                             form.setFieldValue(field.name, e.target.value);
                                         }}
+                                        maskChar={null}
                                     >
                                         {(inputProps) => (
                                             <TextField
@@ -109,23 +111,49 @@ const RegisterForm = ({ onClose, onShowLogin }) => {
                                 as={TextField}
                                 name="password"
                                 label="Пароль"
-                                type="password"
+                                type={showPassword ? 'text' : 'password'}
                                 variant="outlined"
                                 fullWidth
                                 error={touched.password && Boolean(errors.password)}
                                 helperText={touched.password && errors.password}
                                 sx={styles.inputField}
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="toggle password visibility"
+                                                onClick={handleClickShowPassword}
+                                                edge="end"
+                                            >
+                                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
+                                }}
                             />
                             <Field
                                 as={TextField}
                                 name="confirmPassword"
                                 label="Підтвердження паролю"
-                                type="password"
+                                type={showPassword ? 'text' : 'password'}
                                 variant="outlined"
                                 fullWidth
                                 error={touched.confirmPassword && Boolean(errors.confirmPassword)}
                                 helperText={touched.confirmPassword && errors.confirmPassword}
                                 sx={styles.inputField}
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="toggle password visibility"
+                                                onClick={handleClickShowPassword}
+                                                edge="end"
+                                            >
+                                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
+                                }}
                             />
                             {errors.submit && (
                                 <Typography variant="body2" color="error">

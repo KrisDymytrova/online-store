@@ -47,6 +47,7 @@ const CategoriesDropdown = () => {
                 keepMounted
                 open={Boolean(anchorEl)}
                 onClose={handleMouseLeave}
+                MenuListProps={{ onMouseLeave: handleMouseLeave }}
                 sx={styles.menu}
             >
                 {Array.isArray(categories) && categories.map((category, index) => (

@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Box, Typography, IconButton, Checkbox } from '@mui/material';
-import { Delete, Add, Remove, CheckCircle, FavoriteBorder } from '@mui/icons-material';
-import { useDispatch } from 'react-redux';
+import { Box, Typography, IconButton, Checkbox, Button } from '@mui/material';
+import { Delete, Add, Remove, FavoriteBorder, Favorite, CheckSharp } from '@mui/icons-material';
+import { useDispatch, useSelector } from 'react-redux';
 import { addItem, removeItem, deleteItem, deleteAllItems } from '../../../redux/slices/cartSlice';
+import { addFavorite, removeFavorite } from '../../../redux/slices/favoritesSlice';
+import DeleteAllItemsPopup from '../DeleteAllItemsPopup';
 import { styles } from './styles';
 
-const CartItemList = ({ items }) => {
+const CartProductsList = ({ items }) => {
     const dispatch = useDispatch();
     const [selectedItems, setSelectedItems] = useState([]);
+    const [showDeletePopup, setShowDeletePopup] = useState(false);
+    const favorites = useSelector((state) => state.favorites);
 
     const handleSelectItem = (itemId) => {
         setSelectedItems((prevSelected) =>
@@ -18,28 +22,46 @@ const CartItemList = ({ items }) => {
         );
     };
 
+    const handleOpenDeletePopup = () => {
+        setShowDeletePopup(true);
+    };
+
+    const handleCloseDeletePopup = () => {
+        setShowDeletePopup(false);
+    };
+
     const handleDeleteAll = () => {
         dispatch(deleteAllItems());
         setSelectedItems([]);
+        handleCloseDeletePopup();
     };
 
-    if (items.length === 0) {
-        return (
-            <Box sx={styles.emptyCart}>
-                <Typography variant="h6">Кошик порожній</Typography>
-            </Box>
-        );
-    }
+    const handleAddFavorite = (item) => {
+        const isFavorite = favorites.some(fav => fav.code === item.code);
+        if (isFavorite) {
+            dispatch(removeFavorite(item.code));
+        } else {
+            dispatch(addFavorite(item));
+        }
+    };
 
     return (
         <Box sx={styles.itemList}>
             <Box sx={styles.header}>
-                <Delete />
-                <Typography sx={styles.deleteAll} onClick={handleDeleteAll}>Видалити все</Typography>
+                <Button
+                    aria-controls="categories-menu"
+                    aria-haspopup="true"
+                    sx={styles.button}
+                    onClick={handleOpenDeletePopup}
+                >
+                    <Delete />
+                    <Typography sx={styles.deleteAll}>Видалити все</Typography>
+                </Button>
             </Box>
             {items.map(item => {
                 const totalOldPrice = (item.oldPrice * item.quantity).toFixed(2);
                 const totalNewPrice = (item.newPrice * item.quantity).toFixed(2);
+                const isFavorite = favorites.some(fav => fav.code === item.code);
 
                 return (
                     <Box key={item.id} sx={styles.item}>
@@ -47,24 +69,35 @@ const CartItemList = ({ items }) => {
                             <Checkbox
                                 checked={selectedItems.includes(item.id)}
                                 onChange={() => handleSelectItem(item.id)}
+                                sx={styles.checkbox}
                             />
                             <img src={item.imageUrl} alt={item.title} style={styles.itemImage} />
                             <Box sx={styles.itemInfo}>
                                 <Typography variant="body1">{item.title}</Typography>
                                 <Typography variant="body2" sx={styles.code}>Код: {item.code}</Typography>
                                 <Box sx={styles.iconText}>
-                                    <CheckCircle sx={styles.checkIcon} />
+                                    <CheckSharp sx={styles.checkIcon} />
                                     <Typography variant="body1" sx={styles.productAvailability}>Можна забрати сьогодні</Typography>
                                 </Box>
                                 <Box sx={styles.favDelete}>
-                                    <Box sx={styles.favDelIcon}>
-                                        <FavoriteBorder sx={styles.icon}/>
-                                        <Typography variant="body1" sx={styles.code}> В обране </Typography>
-                                    </Box>
-                                    <Box sx={styles.favDelIcon} onClick={() => dispatch(deleteItem(item))} >
+                                    <Button
+                                        aria-controls="categories-menu"
+                                        aria-haspopup="true"
+                                        onClick={() => handleAddFavorite(item)}
+                                        sx={styles.button}
+                                    >
+                                        {isFavorite ? <Favorite sx={styles.iconHeart}/> : <FavoriteBorder sx={styles.iconHeart}/>}
+                                        <Typography variant="body1" sx={styles.code}> {isFavorite ? 'В обраному' : 'В обране'} </Typography>
+                                    </Button>
+                                    <Button
+                                        aria-controls="categories-menu"
+                                        aria-haspopup="true"
+                                        onClick={() => dispatch(deleteItem(item))}
+                                        sx={styles.button}
+                                    >
                                         <Delete sx={styles.icon}/>
                                         <Typography variant="body1" sx={styles.code}> Видалити </Typography>
-                                    </Box>
+                                    </Button>
                                 </Box>
                             </Box>
                         </Box>
@@ -91,11 +124,17 @@ const CartItemList = ({ items }) => {
                     </Box>
                 );
             })}
+            {showDeletePopup && (
+                <DeleteAllItemsPopup
+                    onClose={handleCloseDeletePopup}
+                    onDelete={handleDeleteAll}
+                />
+            )}
         </Box>
     );
 };
 
-CartItemList.propTypes = {
+CartProductsList.propTypes = {
     items: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.number.isRequired,
@@ -110,4 +149,5 @@ CartItemList.propTypes = {
     ).isRequired,
 };
 
-export default CartItemList;
+export default CartProductsList;
+

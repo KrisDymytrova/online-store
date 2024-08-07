@@ -19,7 +19,7 @@ const CartSummary = ({ totalAmount, totalDiscount, finalAmount }) => {
                     </Box>
                     <Box sx={styles.summaryText}>
                         <Typography>Знижка</Typography>
-                        <Typography sx={styles.price}>{formatCurrency(totalDiscount)} ₴</Typography>
+                        <Typography sx={styles.price}>- {formatCurrency(totalDiscount)} ₴</Typography>
                     </Box>
                 </Box>
                 <Box sx={styles.totalText}>

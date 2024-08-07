@@ -1,16 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Box, Typography, IconButton, Button, TextField } from '@mui/material';
-import { Close as CloseIcon } from '@mui/icons-material';
+import { Box, Typography, IconButton, Button, TextField, InputAdornment } from '@mui/material';
+import { Close as CloseIcon, Visibility, VisibilityOff } from '@mui/icons-material';
 import { Formik, Form, Field } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess, authFailure } from '../../../redux/slices/authSlice';
-import { styles } from './styles';
 import validationLoginForm from '../../../utils/validationSchemas/validationLoginForm.js';
+import { getUserData } from '../../../utils/localStorage';
+import { styles } from './styles';
 
 const LoginForm = ({ onClose, onShowRegister }) => {
     const dispatch = useDispatch();
     const { error } = useSelector((state) => state.auth);
+    const [showPassword, setShowPassword] = useState(false);
+
+    const handleClickShowPassword = () => setShowPassword(!showPassword);
 
     return (
         <Box sx={styles.popupContainer}>
@@ -24,7 +28,8 @@ const LoginForm = ({ onClose, onShowRegister }) => {
                 initialValues={{ login: '', password: '' }}
                 validationSchema={validationLoginForm}
                 onSubmit={(values, { setSubmitting }) => {
-                    if (values.login === 'newuser@test.com' && values.password === '123123') {
+                    const userData = getUserData();
+                    if (userData && values.login === userData.email && values.password === userData.password) {
                         dispatch(loginSuccess({ email: values.login }));
                     } else {
                         dispatch(authFailure('Неправильні облікові дані'));
@@ -37,7 +42,7 @@ const LoginForm = ({ onClose, onShowRegister }) => {
                     <Form>
                         <Box sx={styles.popupContent}>
                             <Typography variant="body2" color="textSecondary">
-                                Для входу введіть свою email адресу
+                                Для входу введіть свою email адресу та пароль
                             </Typography>
                             {error && (
                                 <Typography variant="body2" color="error">
@@ -58,12 +63,25 @@ const LoginForm = ({ onClose, onShowRegister }) => {
                                 as={TextField}
                                 name="password"
                                 label="Пароль"
-                                type="password"
+                                type={showPassword ? 'text' : 'password'}
                                 variant="outlined"
                                 fullWidth
                                 error={touched.password && Boolean(errors.password)}
                                 helperText={touched.password && errors.password}
                                 sx={styles.inputField}
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="toggle password visibility"
+                                                onClick={handleClickShowPassword}
+                                                edge="end"
+                                            >
+                                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
+                                }}
                             />
                         </Box>
                         <Box sx={styles.popupActions}>
@@ -85,7 +103,7 @@ const LoginForm = ({ onClose, onShowRegister }) => {
                                 sx={styles.registerLink}
                                 onClick={onShowRegister}
                             >
-                                Зареєструватися
+                                Реєстрація
                             </Typography>
                         </Box>
                     </Form>

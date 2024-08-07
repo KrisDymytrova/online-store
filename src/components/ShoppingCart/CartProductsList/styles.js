@@ -4,20 +4,35 @@ export const styles = {
         padding: '20px',
         borderRadius: '8px',
     },
-    emptyCart: {
-        textAlign: 'center',
-        margin: '200px auto',
-    },
     header: {
         display: 'flex',
         alignItems: 'center',
         paddingBottom: '10px',
         borderBottom: '1px solid #e0e0e0',
     },
+    button: {
+        display: 'flex',
+        gap:'2px',
+        textTransform: 'none',
+        fontSize: '16px',
+        backgroundColor: '#f9f9f9',
+        color: '#000',
+        '&:hover': {
+            backgroundColor: '#e9e9ec',
+        },
+    },
+    iconHeart: {
+        color: '#e25c1d',
+    },
     deleteAll: {
         cursor: 'pointer',
         marginLeft: '10px',
         fontSize: '16px',
+    },
+    checkbox: {
+        '&.Mui-checked': {
+            color: '#4caf50',
+        },
     },
     item: {
         display: 'flex',
@@ -34,8 +49,8 @@ export const styles = {
         alignItems: 'center',
     },
     itemImage: {
-        width: '80px',
-        height: '80px',
+        width: '100px',
+        height: 'auto',
         marginRight: '20px',
     },
     itemInfo: {
@@ -48,7 +63,7 @@ export const styles = {
     favDelete: {
         display: 'flex',
         alignItems: 'center',
-        gap: '12px',
+        gap: '6px',
         cursor: 'pointer',
     },
     code: {
@@ -60,16 +75,6 @@ export const styles = {
         flexDirection: 'row',
         alignItems: 'center',
         margin: '8px 0',
-    },
-    favDelIcon: {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginTop: '12px',
-        transition: 'transform 0.3s ease', // Плавный переход
-        '&:hover': {
-            transform: 'scale(1.1)', // Увеличение на 20%
-        },
     },
     checkIcon: {
         color: 'green',
@@ -83,6 +88,8 @@ export const styles = {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'flex-end',
+        maxWidth: '170px',
+        width: '100%',
     },
     price: {
         display: 'flex',

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Box, Typography, IconButton, Button } from '@mui/material';
-import { Close as CloseIcon, Add, Remove, CheckCircle } from '@mui/icons-material';
+import {Close as CloseIcon, Add, Remove, CheckSharp} from '@mui/icons-material';
 import { styles } from './styles.js';
 import { useNavigate } from 'react-router-dom';
 
@@ -56,7 +56,7 @@ const CartPopup = ({ product, onClose }) => {
                 </Box>
                 <Box sx={styles.productInfo}>
                     <Box sx={styles.iconText}>
-                        <CheckCircle sx={styles.checkIcon} />
+                        <CheckSharp sx={styles.checkIcon} />
                         <Typography variant="body1" sx={styles.productAvailability}>Можна забрати сьогодні</Typography>
                     </Box>
                     <Box sx={styles.productInfoPrice}>
@@ -105,4 +105,3 @@ CartPopup.propTypes = {
 };
 
 export default CartPopup;
-

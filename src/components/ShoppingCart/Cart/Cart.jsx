@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import {Box, Typography} from '@mui/material';
-import CartItemList from '../CartItemList';
+import { Box, Typography } from '@mui/material';
+import CartProductsList from '../CartProductsList';
 import CartSummary from '../CartSummary';
 import { styles } from './styles';
 
@@ -10,18 +10,26 @@ const Cart = () => {
 
     return (
         <Box>
-            <Typography variant="h4" gutterBottom sx={styles.text}>Кошик </Typography>
+            <Typography variant="h4" gutterBottom sx={styles.text}>Кошик</Typography>
             <Box sx={styles.cartContainer}>
-                <Box sx={styles.itemListContainer}>
-                    <CartItemList items={items} />
-                </Box>
-                <Box>
-                    <CartSummary
-                        totalAmount={totalAmount}
-                        totalDiscount={totalDiscount}
-                        finalAmount={finalAmount}
-                    />
-                </Box>
+                {items.length === 0 ? (
+                    <Box sx={styles.emptyCart}>
+                        <Typography variant="h6">Кошик порожній</Typography>
+                    </Box>
+                ) : (
+                    <>
+                        <Box sx={styles.itemListContainer}>
+                            <CartProductsList items={items} />
+                        </Box>
+                        <Box>
+                            <CartSummary
+                                totalAmount={totalAmount}
+                                totalDiscount={totalDiscount}
+                                finalAmount={finalAmount}
+                            />
+                        </Box>
+                    </>
+                )}
             </Box>
         </Box>
     );

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Menu, MenuItem, Button } from '@mui/material';
-import { AccountCircle, ListAlt, Favorite, Person, ExitToApp } from '@mui/icons-material';
+import {AccountCircle, ListAlt, Favorite, Person, ExitToApp, HomeSharp} from '@mui/icons-material';
 import { styles } from './styles';
 
 const ProfileDropdown = ({ onLogout }) => {
@@ -48,7 +48,7 @@ const ProfileDropdown = ({ onLogout }) => {
                     onClick={() => handleSelectOption('/profile')}
                     sx={styles.menuItem}
                 >
-                    <AccountCircle sx={{ marginRight: '10px' }} />
+                    <HomeSharp sx={{ marginRight: '10px' }} />
                     Мій кабінет
                 </MenuItem>
                 <MenuItem

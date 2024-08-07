@@ -6,6 +6,10 @@ export const styles = {
         padding: '20px',
         gap: '20px',
     },
+    emptyCart: {
+        textAlign: 'center',
+        margin: '200px auto',
+    },
     text: {
         fontSize: '24px',
         fontWeight: 'bold',

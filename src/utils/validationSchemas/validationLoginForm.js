@@ -8,7 +8,7 @@ const validationLoginForm = Yup.object().shape({
     password: Yup.string()
         .min(6, 'Пароль повинен містити щонайменше 6 символів')
         .trim()
-        .required('Пароль обов\'язковий'),
+        .required('Пароль є обов\'язковим'),
 });
 
 export default validationLoginForm;
