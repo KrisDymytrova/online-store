@@ -1,8 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGetProductsQuery } from '../../../redux/productsApi/productsApi.js';
-import ViewedProductCard from '../ViewedProductCard/index.js';
 import { Box } from '@mui/material';
+import ViewedProductCard from '../ViewedProductCard';
 import { styles } from './styles.js';
 
 const ViewedProductsList = () => {
@@ -25,11 +25,13 @@ const ViewedProductsList = () => {
                     <ViewedProductCard
                         imageUrl={product.image}
                         title={product.title}
+                        code={product.id}
                         oldPrice={(product.price * 1.1).toFixed(2)}
                         discount={10}
                         newPrice={product.price}
                         bonus={Math.floor(product.price * 0.1).toFixed(2)}
-                        onClick={() => handleProductClick(product.id)}
+                        onImageClick={() => handleProductClick(product.id)}
+                        onTitleClick={() => handleProductClick(product.id)}
                     />
                 </Box>
             ))}

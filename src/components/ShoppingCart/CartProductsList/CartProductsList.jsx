@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Box, Typography, IconButton, Checkbox, Button } from '@mui/material';
+import { Box, Typography, IconButton, Button } from '@mui/material';
 import { Delete, Add, Remove, FavoriteBorder, Favorite, CheckSharp } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import { addItem, removeItem, deleteItem, deleteAllItems } from '../../../redux/slices/cartSlice';
@@ -10,17 +10,8 @@ import { styles } from './styles';
 
 const CartProductsList = ({ items }) => {
     const dispatch = useDispatch();
-    const [selectedItems, setSelectedItems] = useState([]);
     const [showDeletePopup, setShowDeletePopup] = useState(false);
     const favorites = useSelector((state) => state.favorites);
-
-    const handleSelectItem = (itemId) => {
-        setSelectedItems((prevSelected) =>
-            prevSelected.includes(itemId)
-                ? prevSelected.filter(id => id !== itemId)
-                : [...prevSelected, itemId]
-        );
-    };
 
     const handleOpenDeletePopup = () => {
         setShowDeletePopup(true);
@@ -32,7 +23,6 @@ const CartProductsList = ({ items }) => {
 
     const handleDeleteAll = () => {
         dispatch(deleteAllItems());
-        setSelectedItems([]);
         handleCloseDeletePopup();
     };
 
@@ -55,7 +45,7 @@ const CartProductsList = ({ items }) => {
                     onClick={handleOpenDeletePopup}
                 >
                     <Delete />
-                    <Typography sx={styles.deleteAll}>Видалити все</Typography>
+                    <Typography>Видалити все</Typography>
                 </Button>
             </Box>
             {items.map(item => {
@@ -66,11 +56,6 @@ const CartProductsList = ({ items }) => {
                 return (
                     <Box key={item.id} sx={styles.item}>
                         <Box sx={styles.itemDetails}>
-                            <Checkbox
-                                checked={selectedItems.includes(item.id)}
-                                onChange={() => handleSelectItem(item.id)}
-                                sx={styles.checkbox}
-                            />
                             <img src={item.imageUrl} alt={item.title} style={styles.itemImage} />
                             <Box sx={styles.itemInfo}>
                                 <Typography variant="body1">{item.title}</Typography>
@@ -150,4 +135,3 @@ CartProductsList.propTypes = {
 };
 
 export default CartProductsList;
-

@@ -5,6 +5,7 @@ import CategoryPage from "../pages/CategoryPage";
 import FavProductsPage from "../pages/FavProductsPage";
 import ShoppingCartPage from '../pages/ShoppingCartPage';
 import CheckoutPage from '../pages/CheckoutPage';
+import OrderSuccessPage from '../pages/OrderSuccessPage';
 import NotFoundPage from '../pages/NotFoundPage';
 
 const pagesRoutesConfig = [
@@ -31,6 +32,10 @@ const pagesRoutesConfig = [
     {
         path: routeNames.checkoutPage,
         component: CheckoutPage,
+    },
+    {
+        path: routeNames.orderSuccessPage,
+        component: OrderSuccessPage,
     },
     {
         path: routeNames.notFoundPage,

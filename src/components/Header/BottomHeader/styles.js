@@ -35,6 +35,11 @@ export const styles = {
             backgroundColor: '#388e3c',
         },
     },
+    badge: {
+        '& .css-dlwkee-MuiBadge-badge': {
+            backgroundColor: '#ff6f00',
+}
+    },
     amountText: {
         color: '#fff',
         marginLeft: '8px',

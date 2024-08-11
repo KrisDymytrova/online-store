@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import PropTypes from 'prop-types';
 import { AppBar, Toolbar, Badge, Box, Typography, IconButton, Button, Divider } from '@mui/material';
-import { ShoppingCart, Favorite, AccountCircle, ViewList } from '@mui/icons-material';
+import { ShoppingCart, Favorite } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import { loadUserFromCookies, logout } from '../../../redux/slices/authSlice.js';
 import SearchBar from '../../UI/SearchBar';
@@ -11,20 +10,20 @@ import AuthModal from '../../Auth/AuthModal';
 import ProfileDropdown from '../../UserProfile/ProfileDropdown';
 import { styles } from './styles.js';
 
-const BottomHeader = ({ cartCount, totalAmount }) => {
-    const [setSelectedCategory] = useState(null);
+const BottomHeader = () => {
     const [openAuthModal, setOpenAuthModal] = useState(false);
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { isAuthenticated, user } = useSelector((state) => state.auth);
+    const { isAuthenticated } = useSelector((state) => state.auth);
+    const { cartCount, finalAmount } = useSelector((state) => state.cart);
 
     useEffect(() => {
         dispatch(loadUserFromCookies());
     }, [dispatch]);
 
     const handleSelectCategory = (category) => {
-        setSelectedCategory(category);
+        // handle category selection if needed
     };
 
     const handleCartClick = () => {
@@ -74,12 +73,12 @@ const BottomHeader = ({ cartCount, totalAmount }) => {
                         </IconButton>
                         <Divider orientation="vertical" flexItem sx={styles.divider} />
                         <IconButton sx={styles.iconButton} onClick={handleCartClick}>
-                            <Badge badgeContent={cartCount} color="secondary">
+                            <Badge badgeContent={cartCount} sx={styles.badge}>
                                 <ShoppingCart />
                             </Badge>
                         </IconButton>
                         <Typography variant="h6" component="div" sx={styles.amountText}>
-                            {totalAmount} ₴
+                            {finalAmount.toFixed(2)} ₴
                         </Typography>
                     </Box>
                 </Toolbar>
@@ -87,11 +86,6 @@ const BottomHeader = ({ cartCount, totalAmount }) => {
             <AuthModal open={openAuthModal} onClose={handleAuthModalClose} />
         </>
     );
-};
-
-BottomHeader.propTypes = {
-    cartCount: PropTypes.number.isRequired,
-    totalAmount: PropTypes.number.isRequired,
 };
 
 export default BottomHeader;

@@ -3,7 +3,6 @@ export const styles = {
         marginLeft: 8,
         minWidth: 150,
         maxWidth: 300,
-        overflow: 'hidden',
         textOverflow: 'ellipsis',
     },
     inputLabel: {

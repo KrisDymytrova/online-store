@@ -15,13 +15,25 @@ import mono from '../../../assets/mono-10_4.svg';
 import kredit from '../../../assets/kredit-15.svg';
 import abank from '../../../assets/abank-07_8.svg';
 
-const ProductCard = ({ imageUrl, code, title, rating, ratingCount, oldPrice, discount, newPrice, bonus, onClick }) => {
+const ProductCard = ({
+                         imageUrl,
+                         code,
+                         title,
+                         rating,
+                         ratingCount,
+                         oldPrice,
+                         discount,
+                         newPrice,
+                         bonus,
+                         onImageClick,
+                         onTitleClick
+                     }) => {
     const [showPopup, setShowPopup] = useState(false);
     const [showSnackbar, setShowSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [isInCart, setIsInCart] = useState(false);
     const dispatch = useDispatch();
-    const favorites = useSelector((state) => state.favorites);
+    const favorites = useSelector((state) => state.favorites.items || []);
     const cartItems = useSelector((state) => state.cart.items);
     const isFavorite = favorites.some(fav => fav.code === code);
 
@@ -70,23 +82,33 @@ const ProductCard = ({ imageUrl, code, title, rating, ratingCount, oldPrice, dis
 
     return (
         <Box sx={styles.container}>
-            <Box sx={styles.imageContainer} onClick={onClick}>
-                <img src={imageUrl} alt={title} style={styles.image} />
-            </Box>
             <Box>
-                <Box sx={styles.codeFavorite}>
-                    <Typography variant="body2" sx={styles.code}>Код: {code}</Typography>
-                    <Box sx={styles.icon}>
-                        <IconButton onClick={handleToggleFavorite}>
-                            {isFavorite ? <Favorite /> : <FavoriteBorder />}
-                        </IconButton>
+                <Box sx={styles.imageContainer} onClick={onImageClick}>
+                    <img src={imageUrl} alt={title} style={styles.image} />
+                </Box>
+                <Box>
+                    <Box sx={styles.codeFavorite}>
+                        <Typography variant="body2" sx={styles.code}>Код: {code}</Typography>
+                        <Box sx={styles.icon}>
+                            <IconButton onClick={handleToggleFavorite}>
+                                {isFavorite ? <Favorite /> : <FavoriteBorder />}
+                            </IconButton>
+                        </Box>
+                    </Box>
+                    <Typography
+                        variant="h6"
+                        sx={styles.title}
+                        onClick={onTitleClick}
+                    >
+                        {title}
+                    </Typography>
+                    <Box sx={styles.rating}>
+                        <Box sx={styles.ratingStars}>{'★'.repeat(rating)}{'☆'.repeat(5 - rating)}</Box>
+                        <Typography variant="body2" sx={styles.ratingCount}>({ratingCount})</Typography>
                     </Box>
                 </Box>
-                <Typography variant="h6" sx={styles.title}>{title}</Typography>
-                <Box sx={styles.rating}>
-                    <Box sx={styles.ratingStars}>{'★'.repeat(rating)}{'☆'.repeat(5 - rating)}</Box>
-                    <Typography variant="body2" sx={styles.ratingCount}>({ratingCount})</Typography>
-                </Box>
+            </Box>
+            <Box>
                 <Box sx={styles.paymentMethods}>
                     <img src={deliveryPdp} alt="Delivery"/>
                     <img src={oche} alt="PrivatBank"/>
@@ -139,7 +161,9 @@ ProductCard.propTypes = {
     discount: PropTypes.number.isRequired,
     newPrice: PropTypes.string.isRequired,
     bonus: PropTypes.string.isRequired,
-    onClick: PropTypes.func.isRequired,
+    onClick: PropTypes.func,
+    onImageClick: PropTypes.func.isRequired,
+    onTitleClick: PropTypes.func.isRequired,
 };
 
 export default ProductCard;

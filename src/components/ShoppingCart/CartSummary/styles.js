@@ -36,6 +36,12 @@ export const styles = {
         gap: '8px',
         marginBottom: '32px',
     },
+    divider: {
+        backgroundColor: '#000',
+        margin: '8px 0',
+        maxWidth: '320px',
+        width: '100%',
+    },
     summaryText: {
         display: 'flex',
         justifyContent: 'space-between',
@@ -43,7 +49,6 @@ export const styles = {
     },
     price: {
         fontWeight: 'bold',
-
     },
     totalText: {
         display: 'flex',

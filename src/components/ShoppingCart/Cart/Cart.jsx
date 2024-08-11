@@ -6,7 +6,7 @@ import CartSummary from '../CartSummary';
 import { styles } from './styles';
 
 const Cart = () => {
-    const { items, totalAmount, totalDiscount, finalAmount } = useSelector(state => state.cart);
+    const { items, totalAmount, totalDiscount, finalAmount, cartCount } = useSelector(state => state.cart);
 
     return (
         <Box>
@@ -23,6 +23,7 @@ const Cart = () => {
                         </Box>
                         <Box>
                             <CartSummary
+                                cartCount={cartCount}
                                 totalAmount={totalAmount}
                                 totalDiscount={totalDiscount}
                                 finalAmount={finalAmount}

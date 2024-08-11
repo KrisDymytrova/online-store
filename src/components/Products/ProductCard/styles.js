@@ -6,7 +6,7 @@ export const styles = {
         border: '1px solid #ddd',
         borderRadius: '8px',
         padding: '16px',
-        maxWidth: '330px',
+        width: '330px',
         fontFamily: 'Arial, sans-serif',
     },
     imageContainer: {
@@ -18,8 +18,12 @@ export const styles = {
         marginBottom: '16px',
     },
     image: {
-        maxWidth: '100%',
         borderRadius: '8px',
+        objectFit: 'contain',
+        objectPosition: 'center',
+        width: '190px',
+        height: '240px',
+        cursor: 'pointer',
     },
     code: {
         color: '#999',
@@ -30,6 +34,7 @@ export const styles = {
         fontWeight: 'bold',
         fontSize: '16px',
         marginBottom: '5px',
+        cursor: 'pointer',
     },
     codeFavorite: {
         display: 'flex',
@@ -107,11 +112,8 @@ export const styles = {
         marginBottom: '8px',
     },
     iconCart: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        '& .MuiButton-endIcon': {
-            display: 'flex',
-            margin: '0px',
+        '& .css-9tj150-MuiButton-endIcon': {
+            margin: '0px !important',
         },
     },
 };

@@ -1,14 +1,23 @@
 import React from 'react';
-import TopHeader from '../../components/Header/TopHeader';
-import BottomHeader from '../../components/Header/BottomHeader';
-import BaseTemplate from "../../templates/BaseTemplate/index.js";
+import BaseTemplate from '../../templates/BaseTemplate';
+import Checkout from '../../components/Checkout/Checkout';
+import ContentContainer from '../../templates/ContentContainer';
 
 const CheckoutPage = () => {
 
     return (
-        <BaseTemplate className={'home-page'}>
-            <TopHeader location="Київ" languages={['УКР', 'РУС']} />
-            <BottomHeader cartCount={1} totalAmount={2199} />
+        <BaseTemplate
+            className="home-page"
+            showTopHeader={false}
+            showCartHeader={true}
+            showBottomHeader={false}
+            showTopFooter={true}
+            showMainFooter={true}
+            showBottomFooter={true}
+        >
+            <ContentContainer>
+                <Checkout  />
+            </ContentContainer>
         </BaseTemplate>
     );
 };

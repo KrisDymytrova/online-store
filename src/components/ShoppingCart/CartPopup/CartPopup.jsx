@@ -1,14 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Box, Typography, IconButton, Button } from '@mui/material';
-import {Close as CloseIcon, Add, Remove, CheckSharp} from '@mui/icons-material';
+import { Close as CloseIcon, Add, Remove, CheckSharp } from '@mui/icons-material';
 import { styles } from './styles.js';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { addItem } from '../../../redux/slices/cartSlice.js';
 
 const CartPopup = ({ product, onClose }) => {
     const [quantity, setQuantity] = useState(1);
     const navigate = useNavigate();
     const popupRef = useRef(null);
+    const dispatch = useDispatch();
 
     const handleIncrease = () => {
         setQuantity(prevQuantity => prevQuantity + 1);
@@ -24,6 +27,11 @@ const CartPopup = ({ product, onClose }) => {
 
     const handleGoToCart = () => {
         navigate('/shopping-cart');
+    };
+
+    const handleAddToCart = () => {
+        dispatch(addItem({ ...product, quantity }));
+        onClose();
     };
 
     const totalOldPrice = (product.oldPrice * quantity).toFixed(2);
@@ -86,7 +94,7 @@ const CartPopup = ({ product, onClose }) => {
                 <Button sx={styles.continueButton} variant="outlined" onClick={onClose}>Продовжити покупки</Button>
                 <Box>
                     <Button sx={styles.goToCartButton} variant="contained" onClick={handleGoToCart}>Перейти до кошика</Button>
-                    <Button sx={styles.makeOrderButton} variant="outlined">Оформити замовлення</Button>
+                    <Button sx={styles.makeOrderButton} variant="outlined" onClick={handleAddToCart}>Оформити замовлення</Button>
                 </Box>
             </Box>
         </Box>

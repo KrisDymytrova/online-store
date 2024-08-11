@@ -5,6 +5,7 @@ const routeNames = {
     favProductsPage: '/fav-products',
     shoppingCartPage: '/shopping-cart',
     checkoutPage: '/checkout',
+    orderSuccessPage: '/order-success',
     notFoundPage: '*'
 }
 

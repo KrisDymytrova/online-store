@@ -1,15 +1,29 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+// Функция загрузки данных из localStorage
 const loadCartFromLocalStorage = () => {
     const savedCart = localStorage.getItem('cartItems');
     if (savedCart) {
         return JSON.parse(savedCart);
     }
-    return { items: [], totalAmount: 0, totalDiscount: 0, finalAmount: 0 };
+    return { items: [], totalAmount: 0, totalDiscount: 0, finalAmount: 0, cartCount: 0 };
 };
 
+// Изначальное состояние
 const initialState = loadCartFromLocalStorage();
 
+// Функция обновления итогов
+const updateTotals = (state) => {
+    state.totalAmount = state.items.reduce((total, item) => total + (item.oldPrice * item.quantity), 0);
+    state.totalDiscount = state.items.reduce((total, item) => total + ((item.oldPrice - item.newPrice) * item.quantity), 0);
+    state.finalAmount = state.totalAmount - state.totalDiscount;
+    state.cartCount = state.items.reduce((count, item) => count + item.quantity, 0);
+
+    // Сохранение в localStorage
+    localStorage.setItem('cartItems', JSON.stringify(state));
+};
+
+// Слайс для корзины
 const cartSlice = createSlice({
     name: 'cart',
     initialState,
@@ -19,18 +33,12 @@ const cartSlice = createSlice({
             const existingItem = state.items.find(cartItem => cartItem.code === item.code);
 
             if (existingItem) {
-                existingItem.quantity += 1;
+                existingItem.quantity += item.quantity;
             } else {
-                state.items.push({ ...item, quantity: 1 });
+                state.items.push({ ...item, quantity: item.quantity });
             }
 
-            // Update totals
-            state.totalAmount += item.newPrice;
-            state.totalDiscount += (item.oldPrice - item.newPrice);
-            state.finalAmount = state.totalAmount - state.totalDiscount;
-
-            // Save to local storage
-            localStorage.setItem('cartItems', JSON.stringify(state));
+            updateTotals(state);
         },
         removeItem: (state, action) => {
             const item = action.payload;
@@ -43,44 +51,22 @@ const cartSlice = createSlice({
                     existingItem.quantity -= 1;
                 }
 
-                // Update totals
-                state.totalAmount -= item.newPrice;
-                state.totalDiscount -= (item.oldPrice - item.newPrice);
-                state.finalAmount = state.totalAmount - state.totalDiscount;
-
-                // Save to local storage
-                localStorage.setItem('cartItems', JSON.stringify(state));
+                updateTotals(state);
             }
         },
         deleteItem: (state, action) => {
             const item = action.payload;
-            const existingItem = state.items.find(cartItem => cartItem.code === item.code);
-
-            if (existingItem) {
-                state.totalAmount -= existingItem.newPrice * existingItem.quantity;
-                state.totalDiscount -= (existingItem.oldPrice - existingItem.newPrice) * existingItem.quantity;
-                state.items = state.items.filter(cartItem => cartItem.code !== item.code);
-                state.finalAmount = state.totalAmount - state.totalDiscount;
-
-                // Save to local storage
-                localStorage.setItem('cartItems', JSON.stringify(state));
-            }
+            state.items = state.items.filter(cartItem => cartItem.code !== item.code);
+            updateTotals(state);
         },
         deleteAllItems: (state) => {
-            // Calculate totals before clearing the items
-            const totalAmount = state.totalAmount;
-            const totalDiscount = state.totalDiscount;
-
-            // Clear the items
             state.items = [];
             state.totalAmount = 0;
             state.totalDiscount = 0;
             state.finalAmount = 0;
-
-            // Save to local storage
+            state.cartCount = 0;
             localStorage.setItem('cartItems', JSON.stringify(state));
         },
-
     },
 });
 
@@ -88,6 +74,7 @@ export const {
     addItem,
     removeItem,
     deleteItem,
-    deleteAllItems
+    deleteAllItems,
 } = cartSlice.actions;
+
 export default cartSlice.reducer;

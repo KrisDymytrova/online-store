@@ -22,7 +22,7 @@ const localStorageSlice = createSlice({
                 state.items.push({ ...action.payload, quantity: 1 });
             }
 
-            state.totalAmount += newPrice;
+            state.totalAmount += oldPrice;
             state.totalDiscount += (oldPrice - newPrice);
             state.finalAmount = state.totalAmount - state.totalDiscount;
 
@@ -39,7 +39,7 @@ const localStorageSlice = createSlice({
                     existingItem.quantity -= 1;
                 }
 
-                state.totalAmount -= newPrice;
+                state.totalAmount -= oldPrice;
                 state.totalDiscount -= (oldPrice - newPrice);
                 state.finalAmount = state.totalAmount - state.totalDiscount;
 
@@ -48,7 +48,7 @@ const localStorageSlice = createSlice({
         },
         deleteItem: (state, action) => {
             const { id, newPrice, oldPrice, quantity } = action.payload;
-            state.totalAmount -= newPrice * quantity;
+            state.totalAmount -= oldPrice * quantity;
             state.totalDiscount -= (oldPrice - newPrice) * quantity;
             state.items = state.items.filter(item => item.id !== id);
             state.finalAmount = state.totalAmount - state.totalDiscount;
@@ -58,7 +58,7 @@ const localStorageSlice = createSlice({
         loadCartFromLocalStorage: (state) => {
             const items = getCartItems();
             state.items = items;
-            state.totalAmount = items.reduce((sum, item) => sum + item.newPrice * item.quantity, 0);
+            state.totalAmount = items.reduce((sum, item) => sum + item.oldPrice * item.quantity, 0);
             state.totalDiscount = items.reduce((sum, item) => sum + (item.oldPrice - item.newPrice) * item.quantity, 0);
             state.finalAmount = state.totalAmount - state.totalDiscount;
         },

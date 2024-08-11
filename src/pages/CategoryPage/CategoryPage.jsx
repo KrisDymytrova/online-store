@@ -1,9 +1,9 @@
 import React from 'react';
 import BaseTemplate from '../../templates/BaseTemplate';
 import ContentContainer from "../../templates/ContentContainer";
-import ProductsCategoryList from "../../components/Products/ProductsCategoryList";
+import CategoryProductsList from "../../components/Categories/CategoryProductsList";
 
-const ProductDetailPage = () => {
+const CategoryPage = () => {
 
     return (
         <BaseTemplate
@@ -16,10 +16,10 @@ const ProductDetailPage = () => {
             showBottomFooter={true}
         >
             <ContentContainer>
-                <ProductsCategoryList />
+                <CategoryProductsList />
             </ContentContainer>
         </BaseTemplate>
     );
 };
 
-export default ProductDetailPage;
+export default CategoryPage;

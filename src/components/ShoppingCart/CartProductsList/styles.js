@@ -16,23 +16,13 @@ export const styles = {
         textTransform: 'none',
         fontSize: '16px',
         backgroundColor: '#f9f9f9',
-        color: '#000',
+        color: 'grey',
         '&:hover': {
             backgroundColor: '#e9e9ec',
         },
     },
     iconHeart: {
         color: '#e25c1d',
-    },
-    deleteAll: {
-        cursor: 'pointer',
-        marginLeft: '10px',
-        fontSize: '16px',
-    },
-    checkbox: {
-        '&.Mui-checked': {
-            color: '#4caf50',
-        },
     },
     item: {
         display: 'flex',
@@ -49,9 +39,12 @@ export const styles = {
         alignItems: 'center',
     },
     itemImage: {
+        padding: '20px',
+        backgroundColor: '#fff',
+        borderRadius: '8px',
         width: '100px',
         height: 'auto',
-        marginRight: '20px',
+        marginRight: '40px',
     },
     itemInfo: {
         width: '400px',
