@@ -36,15 +36,14 @@ export const styles = {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        gap: '20px',
-        width: '100%',
+        width: '830px',
+        alignItems: 'center',
     },
     labelBox: {
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
         gap: '10px',
-        marginBottom: '5px',
     },
     labelContentBox: {
         display: 'flex',
@@ -81,9 +80,9 @@ export const styles = {
     },
     collapsedContainer: {
         display: 'flex',
-        flexDirection: 'row',
+        flexDirection: 'column',
         justifyContent: 'space-between',
-        alignItems: 'center',
+        gap: '10px',
         padding: '30px',
         border: '1px solid #ccc',
         borderRadius: '8px',
@@ -92,4 +91,13 @@ export const styles = {
     collapsedHeaderText: {
         fontSize: '14px',
     },
+    infoButton: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    selectedInfo: {
+        fontSize: '12px',
+        color: '#888',
+    }
 };

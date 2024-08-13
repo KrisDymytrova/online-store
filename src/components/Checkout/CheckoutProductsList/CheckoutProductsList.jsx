@@ -15,16 +15,16 @@ const CheckoutProductsList = ({ items }) => {
         navigate('/shopping-cart');
     };
 
+    const handleProductClick = (code) => {
+        navigate(`/product/${code}`);
+    };
+
     const handleChangeClick = () => {
         setIsCollapsed(false);
     };
 
     const handleProceedClick = () => {
         setIsCollapsed(true);
-    };
-
-    const handleProductClick = (code) => {
-        navigate(`/product/${code}`);
     };
 
     if (isCollapsed) {
@@ -94,7 +94,7 @@ const CheckoutProductsList = ({ items }) => {
                             </Box>
                         </Box>
                         <Box sx={styles.quantity}>
-                            <Typography variant="body2">{item.quantity}шт.</Typography>
+                            <Typography variant="body2">{item.quantity} шт.</Typography>
                         </Box>
                         <Box sx={styles.price}>
                             <Typography variant="body2" sx={styles.oldPrice}>{totalOldPrice} ₴</Typography>

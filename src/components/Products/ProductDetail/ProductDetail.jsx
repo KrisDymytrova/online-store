@@ -1,62 +1,54 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import CartPopup from '../../ShoppingCart/CartPopup';
 import ViewedProductsList from '../ViewedProductsList';
 import { Box, Typography, Button, IconButton, Divider, Snackbar } from '@mui/material';
 import { FavoriteBorder, Favorite, ShoppingCart, Payment, Verified, Check } from '@mui/icons-material';
-import { useDispatch, useSelector } from 'react-redux';
-import { addItem } from '../../../redux/slices/cartSlice';
-import { addFavorite, removeFavorite } from '../../../redux/slices/favoritesSlice';
+import useCart from '../../../hooks/useCart';
+import useFavorites from '../../../hooks/useFavorites';
+import useSnackbar from '../../../hooks/useSnackbar';
 import { styles } from './styles.js';
 
-const ProductDetail = ({ imageUrl, title, rating, ratingCount, code, description, oldPrice, newPrice, discount, bonus }) => {
-    const [showPopup, setShowPopup] = useState(false);
-    const [showSnackbar, setShowSnackbar] = useState(false);
-    const [snackbarMessage, setSnackbarMessage] = useState('');
-    const [isInCart, setIsInCart] = useState(false);
-    const dispatch = useDispatch();
-    const favorites = useSelector((state) => state.favorites);
-    const cartItems = useSelector((state) => state.cart.items);
-    const isFavorite = favorites.some(fav => fav.code === code);
-
-    useEffect(() => {
-        const isItemInCart = cartItems.some(item => item.code === code);
-        setIsInCart(isItemInCart);
-    }, [cartItems, code]);
-
-    const handleAddToCart = () => {
-        const product = {
-            imageUrl,
-            code,
-            title,
-            newPrice,
-            oldPrice,
-            discount,
-            quantity: 1,
-        };
-        dispatch(addItem(product));
-        setShowPopup(true);
-        setIsInCart(true);
+const ProductDetail = ({
+                           imageUrl,
+                           title,
+                           rating,
+                           ratingCount,
+                           code,
+                           description,
+                           oldPrice,
+                           newPrice,
+                           discount,
+                           bonus
+                       }) => {
+    const product = {
+        imageUrl,
+        code,
+        title,
+        newPrice,
+        oldPrice,
+        discount,
+        quantity: 1,
     };
 
-    const handleAddFavorite = () => {
-        const product = { imageUrl, code, title, newPrice, oldPrice, discount };
-        if (isFavorite) {
-            dispatch(removeFavorite(code));
-            setSnackbarMessage('Товар успішно видалений з обраного');
-        } else {
-            dispatch(addFavorite(product));
-            setSnackbarMessage('Товар успішно доданий до обраного');
-        }
-        setShowSnackbar(true);
+    const { isInCart, handleAddToCart } = useCart(product);
+    const { isFavorite, handleToggleFavorite } = useFavorites(code, product);
+    const { showSnackbar, snackbarMessage, showSnackbarWithMessage, handleCloseSnackbar } = useSnackbar();
+
+    const [showPopup, setShowPopup] = useState(false);
+
+    const handleAddToCartWithSnackbar = () => {
+        handleAddToCart();
+        setShowPopup(true);
+        showSnackbarWithMessage('Товар успішно доданий до кошика');
+    };
+
+    const handleFavoriteToggle = () => {
+        handleToggleFavorite(showSnackbarWithMessage);
     };
 
     const handleClosePopup = () => {
         setShowPopup(false);
-    };
-
-    const handleCloseSnackbar = () => {
-        setShowSnackbar(false);
     };
 
     return (
@@ -69,7 +61,7 @@ const ProductDetail = ({ imageUrl, title, rating, ratingCount, code, description
                     <Box sx={styles.titleFavorite}>
                         <Typography sx={styles.title}>{title}</Typography>
                         <Box sx={styles.iconHeart}>
-                            <IconButton onClick={handleAddFavorite}>
+                            <IconButton onClick={handleFavoriteToggle}>
                                 {isFavorite ? <Favorite /> : <FavoriteBorder />}
                             </IconButton>
                         </Box>
@@ -98,7 +90,7 @@ const ProductDetail = ({ imageUrl, title, rating, ratingCount, code, description
                             <Button
                                 variant="contained"
                                 sx={styles.buyButton}
-                                onClick={handleAddToCart}
+                                onClick={handleAddToCartWithSnackbar}
                                 endIcon={isInCart ? <Check /> : <ShoppingCart />}
                             >
                                 {isInCart ? 'В кошику' : 'Купити'}

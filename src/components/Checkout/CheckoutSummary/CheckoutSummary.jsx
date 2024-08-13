@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { Box, Typography, Button, TextField, Checkbox, FormControlLabel } from '@mui/material';
+import { Box, Typography, Button, TextField, Checkbox, FormControlLabel, Divider } from '@mui/material';
 import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 import { useNavigate } from 'react-router-dom';
+import { useFormik } from 'formik';
+import { useDispatch } from 'react-redux';
+import { deleteAllItems } from '../../../redux/slices/cartSlice';
 import { styles } from './styles';
 
 const formatCurrency = (amount) => {
@@ -22,6 +25,18 @@ const CheckoutSummary = ({
                          }) => {
     const [isConfirmed, setIsConfirmed] = useState(false);
     const navigate = useNavigate();
+    const dispatch = useDispatch(); // Создаем экземпляр dispatch
+
+    const formik = useFormik({
+        initialValues: {
+            promoCode: discountCode || '',
+            bonusCard: bonusCardNumber || '',
+        },
+        onSubmit: (values) => {
+            onDiscountApply(values.promoCode);
+            onBonusCardChange(values.bonusCard);
+        },
+    });
 
     const handleCheckboxChange = (event) => {
         setIsConfirmed(event.target.checked);
@@ -29,6 +44,7 @@ const CheckoutSummary = ({
 
     const handleConfirmOrder = () => {
         onConfirmOrder();
+        dispatch(deleteAllItems());
         navigate('/order-success');
     };
 
@@ -37,38 +53,44 @@ const CheckoutSummary = ({
             <Typography variant="h6" sx={styles.title}>
                 Разом:
             </Typography>
-            <Box sx={styles.inputContainer}>
-                <TextField
-                    variant="outlined"
-                    placeholder="Код знижки"
-                    sx={styles.textField}
-                    value={discountCode}
-                    onChange={(e) => onDiscountApply(e.target.value)}
-                />
-                <Button
-                    variant="contained"
-                    sx={styles.applyButton}
-                    onClick={() => onDiscountApply(discountCode)}
-                >
-                    Застосувати
-                </Button>
-            </Box>
-            <Box sx={styles.inputContainer}>
-                <TextField
-                    variant="outlined"
-                    placeholder="Номер бонусної картки"
-                    sx={styles.textField}
-                    value={bonusCardNumber}
-                    onChange={(e) => onBonusCardChange(e.target.value)}
-                />
-                <Button
-                    variant="contained"
-                    sx={styles.applyButton}
-                    onClick={() => onBonusCardChange(bonusCardNumber)}
-                >
-                    <DoneOutlineIcon />
-                </Button>
-            </Box>
+            <form onSubmit={formik.handleSubmit}>
+                <Box sx={styles.inputContainer}>
+                    <TextField
+                        variant="outlined"
+                        placeholder="Код знижки"
+                        sx={styles.textField}
+                        value={formik.values.promoCode}
+                        onChange={formik.handleChange}
+                        name="promoCode"
+                    />
+                    <Button
+                        variant="contained"
+                        sx={styles.applyButton}
+                        type="submit"
+                        onClick={() => formik.setFieldValue('promoCode', formik.values.promoCode)}
+                    >
+                        Застосувати
+                    </Button>
+                </Box>
+                <Box sx={styles.inputContainer}>
+                    <TextField
+                        variant="outlined"
+                        placeholder="Номер бонусної картки"
+                        sx={styles.textField}
+                        value={formik.values.bonusCard}
+                        onChange={formik.handleChange}
+                        name="bonusCard"
+                    />
+                    <Button
+                        variant="contained"
+                        sx={styles.applyButton}
+                        type="submit"
+                        onClick={() => formik.setFieldValue('bonusCard', formik.values.bonusCard)}
+                    >
+                        <DoneOutlineIcon />
+                    </Button>
+                </Box>
+            </form>
             <Typography variant="body2" sx={styles.changeBonusCard}>
                 змінити номер бонусної картки
             </Typography>
@@ -86,6 +108,11 @@ const CheckoutSummary = ({
             <Box sx={styles.summaryDetails}>
                 <Box sx={styles.summaryTextContainer}>
                     <Box sx={styles.summaryText}>
+                        <Typography>Кількість товарів </Typography>
+                        <Typography sx={styles.price}>{cartCount} шт.</Typography>
+                    </Box>
+                    <Divider orientation="horizontal" sx={styles.divider} />
+                    <Box sx={styles.summaryText}>
                         <Typography>Товари на суму</Typography>
                         <Typography sx={styles.price}>{formatCurrency(totalAmount)} ₴</Typography>
                     </Box>
@@ -97,11 +124,8 @@ const CheckoutSummary = ({
                         <Typography>Доставка</Typography>
                         <Typography sx={styles.price}>75.00 ₴</Typography>
                     </Box>
-                    <Box sx={styles.summaryText}>
-                        <Typography>Кількість товарів </Typography>
-                        <Typography sx={styles.price}>{cartCount} шт.</Typography>
-                    </Box>
                 </Box>
+                <Divider orientation="horizontal" sx={styles.divider} />
                 <Box sx={styles.totalText}>
                     <Typography variant="h6">Загальна сума</Typography>
                     <Typography variant="h6" sx={styles.price}>{formatCurrency(finalAmount + 75.00)} ₴</Typography>
@@ -136,7 +160,7 @@ CheckoutSummary.propTypes = {
     bonusCardNumber: PropTypes.string,
     totalDiscount: PropTypes.number.isRequired,
     finalAmount: PropTypes.number.isRequired,
-    cartCount: PropTypes.number.isRequired, // Добавлен пропс
+    cartCount: PropTypes.number.isRequired,
     onDiscountApply: PropTypes.func.isRequired,
     onBonusCardChange: PropTypes.func.isRequired,
     onConfirmOrder: PropTypes.func.isRequired,

@@ -1,22 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Box, Typography, Button, Radio, RadioGroup, FormControlLabel, TextField, Select, MenuItem } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { Box, Typography, Button, Radio, RadioGroup, FormControlLabel, Select, MenuItem } from '@mui/material';
 import CheckoutContinueButton from '../../UI/Buttons/CheckoutContinueButton';
 import CheckoutCollapsedButton from '../../UI/Buttons/CheckoutCollapsedButton';
+import { setCity, setDeliveryMethod } from '../../../redux/slices/orderSlice';
 import { styles } from './styles';
 
-const CheckoutDeliverySelection = ({ deliveryMethods, city, onCityChange, onDeliveryMethodChange, cities }) => {
-    const [selectedMethod, setSelectedMethod] = useState(null);
+const CheckoutDeliverySelection = ({ deliveryMethods, cities }) => {
+    const dispatch = useDispatch();
+    const { city, deliveryMethod } = useSelector((state) => state.order);
+    const [selectedMethod, setSelectedMethod] = useState(deliveryMethod || null);
     const [isCollapsed, setIsCollapsed] = useState(true);
+
+    useEffect(() => {
+        const storedCity = localStorage.getItem('city');
+        const storedDeliveryMethod = localStorage.getItem('deliveryMethod');
+
+        if (storedCity) {
+            dispatch(setCity(storedCity));
+        }
+
+        if (storedDeliveryMethod) {
+            const parsedDeliveryMethod = JSON.parse(storedDeliveryMethod);
+            dispatch(setDeliveryMethod(parsedDeliveryMethod));
+        }
+    }, [dispatch]);
+
+    useEffect(() => {
+        setSelectedMethod(deliveryMethod);
+    }, [deliveryMethod]);
 
     const handleMethodChange = (event) => {
         const method = deliveryMethods.find(method => method.id === event.target.value);
         setSelectedMethod(method);
-        onDeliveryMethodChange(method);
+        dispatch(setDeliveryMethod(method));
     };
 
     const handleCityChange = (event) => {
-        onCityChange(event.target.value);
+        dispatch(setCity(event.target.value));
     };
 
     const handleChangeClick = () => {
@@ -24,6 +46,10 @@ const CheckoutDeliverySelection = ({ deliveryMethods, city, onCityChange, onDeli
     };
 
     const handleProceedClick = () => {
+        if (selectedMethod) {
+            localStorage.setItem('deliveryMethod', JSON.stringify(selectedMethod));
+        }
+        localStorage.setItem('city', city);
         setIsCollapsed(true);
     };
 
@@ -33,7 +59,23 @@ const CheckoutDeliverySelection = ({ deliveryMethods, city, onCityChange, onDeli
                 <Typography variant="h6" sx={styles.collapsedHeaderText}>
                     2. Спосіб доставки
                 </Typography>
-                <CheckoutCollapsedButton onClick={handleChangeClick} />
+                <Box sx={styles.infoButton}>
+                    <Box>
+                        <Typography variant="body2" sx={styles.selectedInfo}>
+                            {city ? `Місто: ${city}` : 'Місто: не вибрано'}
+                        </Typography>
+                        {deliveryMethod ? (
+                            <Typography variant="body2" sx={styles.selectedInfo}>
+                                {`Спосіб доставки: ${deliveryMethod.name} (${deliveryMethod.price === 0 ? 'Безкоштовно' : `${deliveryMethod.price} ₴`})`}
+                            </Typography>
+                        ) : (
+                            <Typography variant="body2" sx={styles.selectedInfo}>
+                                Спосіб доставки: не вибрано
+                            </Typography>
+                        )}
+                    </Box>
+                    <CheckoutCollapsedButton onClick={handleChangeClick} />
+                </Box>
             </Box>
         );
     }
@@ -42,7 +84,7 @@ const CheckoutDeliverySelection = ({ deliveryMethods, city, onCityChange, onDeli
         <Box sx={styles.container}>
             <Typography variant="h6" sx={styles.title}>Спосіб доставки</Typography>
             <Select
-                value={city}
+                value={city || ''}
                 onChange={handleCityChange}
                 displayEmpty
                 inputProps={{ 'aria-label': 'Ваше місто' }}
@@ -73,7 +115,9 @@ const CheckoutDeliverySelection = ({ deliveryMethods, city, onCityChange, onDeli
                                             )}
                                         </Box>
                                     </Box>
-                                    <Typography sx={styles.methodPrice}>{method.price === 0 ? 'Безкоштовно' : `${method.price} ₴`}</Typography>
+                                    <Box>
+                                        <Typography sx={styles.methodPrice}>{method.price === 0 ? 'Безкоштовно' : `${method.price} ₴`}</Typography>
+                                    </Box>
                                 </Box>
                             }
                         />

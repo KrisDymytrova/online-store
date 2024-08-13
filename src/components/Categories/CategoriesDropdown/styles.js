@@ -21,7 +21,6 @@ export const styles = {
     },
     menu: {
         marginTop: '5px',
-
     },
     menuItem: {
         width: '222px',

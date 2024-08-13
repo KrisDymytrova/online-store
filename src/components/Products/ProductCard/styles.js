@@ -99,12 +99,15 @@ export const styles = {
         backgroundColor: '#4caf50',
         color: '#fff',
         textAlign: 'center',
-        padding: '8px 16px',
+        padding: '16px',
         borderRadius: '4px',
         cursor: 'pointer',
         '&:hover': {
             backgroundColor: '#e25c1d',
         },
+        '& .css-9tj150-MuiButton-endIcon' : {
+            marginRight: '8px',
+}
     },
     icon: {
         display: 'flex',
@@ -112,8 +115,7 @@ export const styles = {
         marginBottom: '8px',
     },
     iconCart: {
-        '& .css-9tj150-MuiButton-endIcon': {
-            margin: '0px !important',
-        },
-    },
+        width: '25px',
+        height: '25px',
+    }
 };

@@ -1,14 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Box, Typography, Radio, RadioGroup, FormControlLabel } from '@mui/material';
 import CheckoutContinueButton from '../../UI/Buttons/CheckoutContinueButton';
 import CheckoutCollapsedButton from '../../UI/Buttons/CheckoutCollapsedButton';
 import payments from '../../../assets/checkout-payment-title.svg';
 import { styles } from './styles';
+import { useDispatch } from 'react-redux';
+import { setPaymentMethod } from '../../../redux/slices/orderSlice';
 
 const CheckoutPaymentMethod = ({ paymentMethods, onPaymentMethodChange }) => {
     const [selectedMethod, setSelectedMethod] = useState(null);
     const [isCollapsed, setIsCollapsed] = useState(true);
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        const savedMethod = JSON.parse(localStorage.getItem('paymentMethod'));
+        if (savedMethod) {
+            setSelectedMethod(savedMethod);
+        }
+    }, []);
 
     const handleMethodChange = (event) => {
         const method = paymentMethods.find(method => method.id === event.target.value);
@@ -21,6 +31,10 @@ const CheckoutPaymentMethod = ({ paymentMethods, onPaymentMethodChange }) => {
     };
 
     const handleProceedClick = () => {
+        if (selectedMethod) {
+            localStorage.setItem('paymentMethod', JSON.stringify(selectedMethod));
+            dispatch(setPaymentMethod(selectedMethod));
+        }
         setIsCollapsed(true);
     };
 
@@ -84,6 +98,7 @@ CheckoutPaymentMethod.propTypes = {
             subLabel: PropTypes.string,
             price: PropTypes.string,
             warning: PropTypes.string,
+            image: PropTypes.string.isRequired,
         })
     ).isRequired,
     onPaymentMethodChange: PropTypes.func.isRequired,

@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Box, Typography } from '@mui/material';
+import { Box, Link, Typography } from '@mui/material';
+import { KeyboardBackspace } from "@mui/icons-material";
+import { useNavigate } from 'react-router-dom';
 import CheckoutProductsList from '../CheckoutProductsList';
 import CheckoutContactInfo from '../CheckoutContactInfo';
 import CheckoutDeliverySelection from '../CheckoutDeliverySelection';
@@ -11,6 +13,8 @@ import CheckoutSummary from '../CheckoutSummary';
 import { styles } from './styles';
 
 const Checkout = () => {
+    const navigate = useNavigate();
+
     const { totalAmount, totalDiscount, finalAmount, cartCount } = useSelector(state => state.cart);
     const items = useSelector(state => state.cart.items);
 
@@ -75,9 +79,21 @@ const Checkout = () => {
         console.log('Order Confirmed');
     };
 
+    const handleBackToShopping = () => {
+        navigate('/');
+    };
+
+    const deliveryCost = selectedDeliveryMethod ? selectedDeliveryMethod.price : 0;
+
     return (
         <Box>
-            <Typography variant="h4" gutterBottom sx={styles.text}>Оформити замовлення</Typography>
+            <Box sx={styles.headerLink}>
+                <Typography variant="h4" gutterBottom sx={styles.text}>Оформити замовлення</Typography>
+                <Link onClick={handleBackToShopping} sx={styles.headerLinkText}>
+                    <KeyboardBackspace />
+                    Повернутися до покупок
+                </Link>
+            </Box>
             <Box sx={styles.container}>
                 <Box sx={styles.itemsList}>
                     <Box>
@@ -117,6 +133,7 @@ const Checkout = () => {
                         bonusCardNumber={bonusCardNumber}
                         totalDiscount={totalDiscount}
                         finalAmount={finalAmount}
+                        deliveryCost={deliveryCost}
                         onDiscountApply={handleDiscountApply}
                         onBonusCardChange={handleBonusCardChange}
                         onConfirmOrder={handleConfirmOrder}

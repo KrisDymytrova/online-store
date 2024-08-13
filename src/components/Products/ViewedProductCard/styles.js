@@ -82,10 +82,18 @@ export const styles = {
         backgroundColor: '#4caf50',
         color: '#fff',
         textAlign: 'center',
+        padding: '10px',
         borderRadius: '4px',
         cursor: 'pointer',
         '&:hover': {
             backgroundColor: '#e25c1d',
         },
+        '& .css-9tj150-MuiButton-endIcon' : {
+            marginRight: '8px',
+        }
     },
+    iconCart: {
+        width: '25px',
+        height: '25px',
+    }
 };

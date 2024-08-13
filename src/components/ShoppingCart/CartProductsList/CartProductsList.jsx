@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Box, Typography, IconButton, Button } from '@mui/material';
 import { Delete, Add, Remove, FavoriteBorder, Favorite, CheckSharp } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { addItem, removeItem, deleteItem, deleteAllItems } from '../../../redux/slices/cartSlice';
 import { addFavorite, removeFavorite } from '../../../redux/slices/favoritesSlice';
 import DeleteAllItemsPopup from '../DeleteAllItemsPopup';
@@ -10,8 +11,9 @@ import { styles } from './styles';
 
 const CartProductsList = ({ items }) => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [showDeletePopup, setShowDeletePopup] = useState(false);
-    const favorites = useSelector((state) => state.favorites);
+    const favorites = useSelector((state) => state.favorites.items);
 
     const handleOpenDeletePopup = () => {
         setShowDeletePopup(true);
@@ -26,13 +28,20 @@ const CartProductsList = ({ items }) => {
         handleCloseDeletePopup();
     };
 
+    const isItemFavorite = (code) => {
+        return favorites.some(fav => fav.code === code);
+    };
+
     const handleAddFavorite = (item) => {
-        const isFavorite = favorites.some(fav => fav.code === item.code);
-        if (isFavorite) {
+        if (isItemFavorite(item.code)) {
             dispatch(removeFavorite(item.code));
         } else {
             dispatch(addFavorite(item));
         }
+    };
+
+    const handleProductClick = (code) => {
+        navigate(`/product/${code}`);
     };
 
     return (
@@ -51,14 +60,25 @@ const CartProductsList = ({ items }) => {
             {items.map(item => {
                 const totalOldPrice = (item.oldPrice * item.quantity).toFixed(2);
                 const totalNewPrice = (item.newPrice * item.quantity).toFixed(2);
-                const isFavorite = favorites.some(fav => fav.code === item.code);
+                const isFavorite = isItemFavorite(item.code);
 
                 return (
                     <Box key={item.id} sx={styles.item}>
                         <Box sx={styles.itemDetails}>
-                            <img src={item.imageUrl} alt={item.title} style={styles.itemImage} />
+                            <img
+                                src={item.imageUrl}
+                                alt={item.title}
+                                style={styles.itemImage}
+                                onClick={() => handleProductClick(item.code)}
+                            />
                             <Box sx={styles.itemInfo}>
-                                <Typography variant="body1">{item.title}</Typography>
+                                <Typography
+                                    variant="body1"
+                                    onClick={() => handleProductClick(item.code)}
+                                    sx={{ cursor: 'pointer' }}
+                                >
+                                    {item.title}
+                                </Typography>
                                 <Typography variant="body2" sx={styles.code}>Код: {item.code}</Typography>
                                 <Box sx={styles.iconText}>
                                     <CheckSharp sx={styles.checkIcon} />
@@ -72,7 +92,9 @@ const CartProductsList = ({ items }) => {
                                         sx={styles.button}
                                     >
                                         {isFavorite ? <Favorite sx={styles.iconHeart}/> : <FavoriteBorder sx={styles.iconHeart}/>}
-                                        <Typography variant="body1" sx={styles.code}> {isFavorite ? 'В обраному' : 'В обране'} </Typography>
+                                        <Typography variant="body1" sx={styles.code}>
+                                            {isFavorite ? 'В обраному' : 'В обране'}
+                                        </Typography>
                                     </Button>
                                     <Button
                                         aria-controls="categories-menu"

@@ -2,10 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Box, Typography, IconButton, Button } from '@mui/material';
 import { Close as CloseIcon, Add, Remove, CheckSharp } from '@mui/icons-material';
-import { styles } from './styles.js';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { addItem } from '../../../redux/slices/cartSlice.js';
+import { addItem } from '../../../redux/slices/cartSlice';
+import { styles } from './styles.js';
 
 const CartPopup = ({ product, onClose }) => {
     const [quantity, setQuantity] = useState(1);
@@ -32,6 +32,7 @@ const CartPopup = ({ product, onClose }) => {
     const handleAddToCart = () => {
         dispatch(addItem({ ...product, quantity }));
         onClose();
+        navigate('/checkout');
     };
 
     const totalOldPrice = (product.oldPrice * quantity).toFixed(2);

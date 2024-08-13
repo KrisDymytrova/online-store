@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import PropTypes from 'prop-types';
-import { Typography, Box, Button } from '@mui/material';
+import { Typography, Box, Button, Snackbar } from '@mui/material';
 import { ShoppingCart } from '@mui/icons-material';
+import DoneAllOutlinedIcon from "@mui/icons-material/DoneAllOutlined";
 import CartPopup from '../../ShoppingCart/CartPopup';
+import useCart from '../../../hooks/useCart';
+import useSnackbar from '../../../hooks/useSnackbar';
 import { styles } from './styles';
 
 const ViewedProductCard = ({
@@ -12,14 +16,31 @@ const ViewedProductCard = ({
                                oldPrice,
                                discount,
                                newPrice,
-                               bonus,
-                               onImageClick,
-                               onTitleClick
+                               bonus
                            }) => {
-    const [showPopup, setShowPopup] = useState(false);
+    const product = {
+        imageUrl,
+        code,
+        title,
+        newPrice,
+        oldPrice,
+        discount,
+        quantity: 1,
+    };
 
-    const handleAddToCart = () => {
+    const [showPopup, setShowPopup] = useState(false);
+    const { isInCart, handleAddToCart } = useCart(product);
+    const { showSnackbar, snackbarMessage, showSnackbarWithMessage, handleCloseSnackbar } = useSnackbar();
+    const navigate = useNavigate();
+
+    const handleAddToCartWithSnackbar = () => {
+        handleAddToCart();
         setShowPopup(true);
+        showSnackbarWithMessage('Товар успішно доданий до кошика');
+    };
+
+    const handleProductClick = (code) => {
+        navigate(`/product/${code}`);
     };
 
     const handleClosePopup = () => {
@@ -29,19 +50,14 @@ const ViewedProductCard = ({
     return (
         <Box sx={styles.container}>
             <Box>
-                <Box sx={styles.imageContainer}>
-                    <img
-                        src={imageUrl}
-                        alt={title}
-                        style={styles.image}
-                        onClick={onImageClick}
-                    />
+                <Box sx={styles.imageContainer} onClick={() => handleProductClick(code)}>
+                    <img src={imageUrl} alt={title} style={styles.image} />
                 </Box>
                 <Box>
                     <Typography
                         variant="h6"
                         sx={styles.title}
-                        onClick={onTitleClick}
+                        onClick={() => handleProductClick(code)}
                     >
                         {title}
                     </Typography>
@@ -57,18 +73,27 @@ const ViewedProductCard = ({
                         </Box>
                         <Typography variant="h6" sx={styles.newPrice}>{newPrice} ₴</Typography>
                     </Box>
-                    <Button variant="contained" sx={styles.button} onClick={handleAddToCart}>
-                        <ShoppingCart />
-                    </Button>
+                    <Button
+                        variant="contained"
+                        sx={styles.button}
+                        onClick={handleAddToCartWithSnackbar}
+                        endIcon={isInCart ? <DoneAllOutlinedIcon sx={styles.iconCart} /> : <ShoppingCart sx={styles.iconCart} />}
+                    />
                 </Box>
                 <Typography variant="body2" sx={styles.bonus}>+{bonus} ₴ на бонусний рахунок</Typography>
             </Box>
             {showPopup && (
                 <CartPopup
-                    product={{ imageUrl, title, newPrice, oldPrice, code }}
+                    product={{ imageUrl, title, code, newPrice, oldPrice }}
                     onClose={handleClosePopup}
                 />
             )}
+            <Snackbar
+                open={showSnackbar}
+                autoHideDuration={3000}
+                onClose={handleCloseSnackbar}
+                message={snackbarMessage}
+            />
         </Box>
     );
 };
@@ -79,10 +104,8 @@ ViewedProductCard.propTypes = {
     code: PropTypes.string.isRequired,
     oldPrice: PropTypes.string.isRequired,
     discount: PropTypes.number.isRequired,
-    newPrice: PropTypes.number.isRequired,
+    newPrice: PropTypes.string.isRequired,
     bonus: PropTypes.string.isRequired,
-    onImageClick: PropTypes.func.isRequired,
-    onTitleClick: PropTypes.func.isRequired,
 };
 
 export default ViewedProductCard;

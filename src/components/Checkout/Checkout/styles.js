@@ -1,4 +1,17 @@
 export const styles = {
+    headerLink: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    headerLinkText: {
+        display: 'flex',
+        gap: '5px',
+        textDecoration: 'none',
+        cursor: 'pointer',
+        color: '#4caf50',
+        alignItems: 'center',
+    },
     container: {
         display: 'flex',
         justifyContent: 'space-between',

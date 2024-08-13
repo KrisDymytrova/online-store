@@ -5,7 +5,6 @@ export const styles = {
         padding: '16px',
         backgroundColor: '#F5F5F5',
         borderRadius: '8px',
-        marginBottom: '16px',
     },
     checkbox: {
         marginRight: '8px',
@@ -40,13 +39,14 @@ export const styles = {
         display: 'flex',
         alignItems: 'center',
         gap: '8px',
-        marginBottom: '16px',
+        marginBottom: '8px',
+        padding: '8px',
     },
     inputField: {
-        flex: '1',
-        padding: '12px',
+        width: '80px',
         fontSize: '16px',
         borderRadius: '4px',
+        textAlign: 'center',
     },
     balanceButton: {
         backgroundColor: '#4caf50',

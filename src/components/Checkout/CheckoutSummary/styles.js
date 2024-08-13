@@ -54,7 +54,7 @@ export const styles = {
     disclaimer: {
         fontSize: '12px',
         color: '#ff5722',
-        marginBottom: '16px',
+        marginBottom: '8px',
     },
     summaryDetails: {
         display: 'flex',
@@ -69,12 +69,10 @@ export const styles = {
         flexDirection: 'column',
         justifyContent: 'space-between',
         gap: '8px',
-        marginBottom: '32px',
     },
     summaryText: {
         display: 'flex',
         justifyContent: 'space-between',
-        fontSize: '16px',
     },
     price: {
         fontWeight: 'bold',
@@ -129,5 +127,11 @@ export const styles = {
         '& .MuiFormControlLabel-label': {
             fontSize: '0.75rem',
         }
+    },
+    divider: {
+        backgroundColor: '#000',
+        margin: '8px 0',
+        maxWidth: '400px',
+        width: '100%',
     },
 };

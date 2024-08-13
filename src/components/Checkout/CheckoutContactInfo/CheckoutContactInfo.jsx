@@ -6,9 +6,16 @@ import validationCheckoutContactForm from '../../../utils/validationSchemas/vali
 import CheckoutContinueButton from '../../UI/Buttons/CheckoutContinueButton';
 import CheckoutCollapsedButton from '../../UI/Buttons/CheckoutCollapsedButton';
 import { styles } from './styles';
+import InputMask from 'react-input-mask';
+import { useDispatch, useSelector } from 'react-redux';
+import { setContactInfo, setReceiverInfo } from '../../../redux/slices/orderSlice';
 
 const CheckoutContactInfo = ({ onSubmit }) => {
     const [isCollapsed, setIsCollapsed] = useState(true);
+    const dispatch = useDispatch();
+
+    const contactInfo = useSelector((state) => state.order.contactInfo);
+    const receiverInfo = useSelector((state) => state.order.receiverInfo);
 
     const formik = useFormik({
         initialValues: {
@@ -23,6 +30,25 @@ const CheckoutContactInfo = ({ onSubmit }) => {
         },
         validationSchema: validationCheckoutContactForm,
         onSubmit: (values) => {
+            console.log('Submitted values:', values);
+
+            dispatch(setContactInfo({ phoneNumber: values.phoneNumber, firstName: values.firstName, email: values.email }));
+
+            if (values.isAnotherReceiver) {
+                console.log('Saving receiverInfo:', {
+                    receiverPhone: values.receiverPhone,
+                    receiverFirstName: values.receiverFirstName,
+                    receiverLastName: values.receiverLastName,
+                    receiverPatronymic: values.receiverPatronymic
+                });
+                dispatch(setReceiverInfo({
+                    receiverPhone: values.receiverPhone,
+                    receiverFirstName: values.receiverFirstName,
+                    receiverLastName: values.receiverLastName,
+                    receiverPatronymic: values.receiverPatronymic
+                }));
+            }
+
             onSubmit(values);
             setIsCollapsed(true);
         },
@@ -33,7 +59,7 @@ const CheckoutContactInfo = ({ onSubmit }) => {
     };
 
     const handleProceedClick = () => {
-        setIsCollapsed(true);
+        formik.handleSubmit();
     };
 
     if (isCollapsed) {
@@ -42,7 +68,34 @@ const CheckoutContactInfo = ({ onSubmit }) => {
                 <Typography variant="h6" sx={styles.collapsedHeaderText}>
                     1. Контактна інформація
                 </Typography>
-                <CheckoutCollapsedButton onClick={handleChangeClick} />
+                <Box sx={styles.infoButton}>
+                    <Box>
+                        {receiverInfo ? (
+                                <>
+                                    <Typography variant="body2" sx={styles.selectedInfo}>
+                                        {contactInfo.phoneNumber ? `Телефон: ${contactInfo.phoneNumber}` : 'Телефон: не указан'}
+                                    </Typography>
+                                    <Typography variant="body2" sx={styles.selectedInfo}>
+                                        {contactInfo.firstName ? `Ім'я: ${contactInfo.firstName}` : 'Ім\'я: не указано'}
+                                    </Typography>
+                                    <Typography variant="body2" sx={styles.selectedInfo}>
+                                        {contactInfo.email ? `E-mail: ${contactInfo.email}` : 'E-mail: не указан'}
+                                    </Typography>
+                                </>
+                        ) : (
+                            <>
+
+                                <Typography variant="body2" sx={styles.selectedInfo}>
+                                    {`Отримувач: ${receiverInfo.receiverFirstName} ${receiverInfo.receiverLastName} ${receiverInfo.receiverPatronymic}`}
+                                </Typography>
+                                <Typography variant="body2" sx={styles.selectedInfo}>
+                                    {`Телефон отримувача: ${receiverInfo.receiverPhone}`}
+                                </Typography>
+                            </>
+                        )}
+                    </Box>
+                    <CheckoutCollapsedButton onClick={handleChangeClick} />
+                </Box>
             </Box>
         );
     }
@@ -53,17 +106,25 @@ const CheckoutContactInfo = ({ onSubmit }) => {
                 1. Контактна інформація
             </Typography>
             <Box sx={styles.phoneNameEmailContainer}>
-                <TextField
-                    fullWidth
-                    variant="outlined"
-                    label="Номер телефону"
-                    name="phoneNumber"
+                <InputMask
+                    mask="+380 99 999 99 99"
                     value={formik.values.phoneNumber}
                     onChange={formik.handleChange}
-                    error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
-                    helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
-                    sx={styles.inputField}
-                />
+                    maskChar={null}
+                >
+                    {(inputProps) => (
+                        <TextField
+                            {...inputProps}
+                            fullWidth
+                            variant="outlined"
+                            label="Номер телефону"
+                            name="phoneNumber"
+                            error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
+                            helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
+                            sx={styles.inputField}
+                        />
+                    )}
+                </InputMask>
                 <TextField
                     fullWidth
                     variant="outlined"
@@ -101,17 +162,25 @@ const CheckoutContactInfo = ({ onSubmit }) => {
             />
             {formik.values.isAnotherReceiver && (
                 <Box sx={styles.anotherReceiver}>
-                    <TextField
-                        fullWidth
-                        variant="outlined"
-                        label="Номер отримувача"
-                        name="receiverPhone"
+                    <InputMask
+                        mask="+380 99 999 99 99"
                         value={formik.values.receiverPhone}
                         onChange={formik.handleChange}
-                        error={formik.touched.receiverPhone && Boolean(formik.errors.receiverPhone)}
-                        helperText={formik.touched.receiverPhone && formik.errors.receiverPhone}
-                        sx={styles.receiverField}
-                    />
+                        maskChar={null}
+                    >
+                        {(inputProps) => (
+                            <TextField
+                                {...inputProps}
+                                fullWidth
+                                variant="outlined"
+                                label="Номер отримувача"
+                                name="receiverPhone"
+                                error={formik.touched.receiverPhone && Boolean(formik.errors.receiverPhone)}
+                                helperText={formik.touched.receiverPhone && formik.errors.receiverPhone}
+                                sx={styles.receiverField}
+                            />
+                        )}
+                    </InputMask>
                     <TextField
                         fullWidth
                         variant="outlined"

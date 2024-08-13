@@ -76,4 +76,3 @@ CheckoutOrderSuccess.propTypes = {
 };
 
 export default CheckoutOrderSuccess;
-

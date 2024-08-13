@@ -19,6 +19,7 @@ export const styles = {
     popupContent: {
         display: 'flex',
         margin: '16px',
+        marginBottom: '32px',
     },
     productImageContainer: {
         flex: '1',
@@ -26,9 +27,12 @@ export const styles = {
         justifyContent: 'center',
     },
     productImage: {
-        maxWidth: '100%',
-        maxHeight: '150px',
-        height: 'auto',
+        borderRadius: '8px',
+        objectFit: 'contain',
+        objectPosition: 'center',
+        width: '150px',
+        height: '150px',
+        cursor: 'pointer',
     },
     productInfo: {
         flex: '4',

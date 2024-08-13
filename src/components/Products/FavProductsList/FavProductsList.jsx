@@ -1,26 +1,24 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import { useGetProductsQuery } from '../../../redux/productsApi/productsApi.js';
 import { useSelector, useDispatch } from 'react-redux';
 import ProductCard from '../../Products/ProductCard';
 import { Box, Typography, Snackbar } from '@mui/material';
-import { removeFavorite } from '../../../redux/slices/favoritesSlice';
-import { styles } from './styles.js';
+import { removeFavorite, loadFavoritesFromLocalStorage } from '../../../redux/slices/favoritesSlice';
+import { styles } from './styles';
 
 const FavProductList = () => {
-    const { data: products, error, isLoading } = useGetProductsQuery();
-    const navigate = useNavigate();
     const dispatch = useDispatch();
-    const favorites = useSelector((state) => state.favorites);
+    const { data: products, error, isLoading } = useGetProductsQuery();
+    const favorites = useSelector((state) => state.favorites.items || []);
     const [showSnackbar, setShowSnackbar] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
 
+    useEffect(() => {
+        dispatch(loadFavoritesFromLocalStorage());
+    }, [dispatch]);
+
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div>Error loading products</div>;
-
-    const handleProductClick = (id) => {
-        navigate(`/product/${id}`);
-    };
 
     const handleRemoveFavorite = (code) => {
         dispatch(removeFavorite(code));
@@ -53,7 +51,6 @@ const FavProductList = () => {
                             discount={10}
                             newPrice={product.price}
                             bonus={Math.floor(product.price * 0.1).toFixed(2)}
-                            onClick={() => handleProductClick(product.id)}
                             onRemoveFavorite={() => handleRemoveFavorite(product.id)}
                         />
                     ))
@@ -74,4 +71,3 @@ const FavProductList = () => {
 };
 
 export default FavProductList;
-

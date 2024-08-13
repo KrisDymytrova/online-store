@@ -1,5 +1,4 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useGetProductsQuery } from '../../../redux/productsApi/productsApi.js';
 import { Box } from '@mui/material';
 import ViewedProductCard from '../ViewedProductCard';
@@ -7,14 +6,9 @@ import { styles } from './styles.js';
 
 const ViewedProductsList = () => {
     const { data: products, error, isLoading } = useGetProductsQuery();
-    const navigate = useNavigate();
 
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div>Error loading products</div>;
-
-    const handleProductClick = (id) => {
-        navigate(`/product/${id}`);
-    };
 
     const viewedProducts = products.slice(0, 6);
 
@@ -30,8 +24,6 @@ const ViewedProductsList = () => {
                         discount={10}
                         newPrice={product.price}
                         bonus={Math.floor(product.price * 0.1).toFixed(2)}
-                        onImageClick={() => handleProductClick(product.id)}
-                        onTitleClick={() => handleProductClick(product.id)}
                     />
                 </Box>
             ))}

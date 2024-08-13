@@ -1,26 +1,45 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
 import { Box, Link, Typography, TextField, IconButton, Checkbox } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { InsertCommentSharp } from "@mui/icons-material";
+import { setComment, setNoCall } from '../../../redux/slices/orderSlice';
 import { styles } from './styles';
 
-const CheckoutComment = ({ onCommentSubmit }) => {
-    const [isCommentOpen, setIsCommentOpen] = useState(false);
-    const [comment, setComment] = useState('');
+const CheckoutComment = () => {
+    const dispatch = useDispatch();
+    const { comment, noCall } = useSelector((state) => state.order);
+    const [isCommentOpen, setIsCommentOpen] = useState(comment !== '');
+    const [localComment, setLocalComment] = useState(comment);
+    const [localNoCall, setLocalNoCall] = useState(noCall);
 
     const handleLinkClick = () => {
         setIsCommentOpen(true);
     };
 
     const handleCommentChange = (event) => {
-        setComment(event.target.value);
+        setLocalComment(event.target.value);
     };
 
     const handleClearComment = () => {
-        setComment('');
+        setLocalComment('');
         setIsCommentOpen(false);
+        dispatch(setComment(''));
     };
+
+    const handleCheckboxChange = (event) => {
+        setLocalNoCall(event.target.checked);
+        dispatch(setNoCall(event.target.checked));
+    };
+
+    React.useEffect(() => {
+        dispatch(setComment(localComment));
+    }, [localComment, dispatch]);
+
+    React.useEffect(() => {
+        dispatch(setNoCall(localNoCall));
+    }, [localNoCall, dispatch]);
 
     return (
         <Box sx={styles.container}>
@@ -35,7 +54,7 @@ const CheckoutComment = ({ onCommentSubmit }) => {
                 <Box sx={styles.commentBox}>
                     <Box sx={styles.commentContainer}>
                         <TextField
-                            value={comment}
+                            value={localComment}
                             onChange={handleCommentChange}
                             placeholder="Коментар до замовлення"
                             variant="outlined"
@@ -51,7 +70,11 @@ const CheckoutComment = ({ onCommentSubmit }) => {
                 </Box>
             )}
             <Box sx={styles.noCallContainer}>
-                <Checkbox sx={styles.noCallCheckbox} />
+                <Checkbox
+                    checked={localNoCall}
+                    onChange={handleCheckboxChange}
+                    sx={styles.noCallCheckbox}
+                />
                 <Typography sx={styles.noCallText}>Не дзвонити для підтвердження замовлення</Typography>
             </Box>
         </Box>
