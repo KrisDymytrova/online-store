@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 import CartPopup from '../../ShoppingCart/CartPopup';
 import ViewedProductsList from '../ViewedProductsList';
 import { Box, Typography, Button, IconButton, Divider, Snackbar } from '@mui/material';
@@ -7,7 +8,7 @@ import { FavoriteBorder, Favorite, ShoppingCart, Payment, Verified, Check } from
 import useCart from '../../../hooks/useCart';
 import useFavorites from '../../../hooks/useFavorites';
 import useSnackbar from '../../../hooks/useSnackbar';
-import { styles } from './styles.js';
+import { styles } from './styles';
 
 const ProductDetail = ({
                            imageUrl,
@@ -19,7 +20,7 @@ const ProductDetail = ({
                            oldPrice,
                            newPrice,
                            discount,
-                           bonus
+                           bonus,
                        }) => {
     const product = {
         imageUrl,
@@ -30,6 +31,8 @@ const ProductDetail = ({
         discount,
         quantity: 1,
     };
+
+    const navigate = useNavigate();
 
     const { isInCart, handleAddToCart } = useCart(product);
     const { isFavorite, handleToggleFavorite } = useFavorites(code, product);
@@ -50,6 +53,22 @@ const ProductDetail = ({
     const handleClosePopup = () => {
         setShowPopup(false);
     };
+
+    const handleButtonClick = () => {
+        if (isInCart) {
+            navigate('/shopping-cart');
+        } else {
+            handleAddToCartWithSnackbar();
+        }
+    };
+
+    useEffect(() => {
+        window.scrollTo({
+            top: 0,
+            left: 0,
+            behavior: 'auto',
+        });
+    }, [code]);
 
     return (
         <Box>
@@ -90,7 +109,7 @@ const ProductDetail = ({
                             <Button
                                 variant="contained"
                                 sx={styles.buyButton}
-                                onClick={handleAddToCartWithSnackbar}
+                                onClick={handleButtonClick} // изменено на handleButtonClick
                                 endIcon={isInCart ? <Check /> : <ShoppingCart />}
                             >
                                 {isInCart ? 'В кошику' : 'Купити'}

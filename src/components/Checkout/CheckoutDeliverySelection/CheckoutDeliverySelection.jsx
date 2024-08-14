@@ -62,7 +62,7 @@ const CheckoutDeliverySelection = ({ deliveryMethods, cities }) => {
                 <Box sx={styles.infoButton}>
                     <Box>
                         <Typography variant="body2" sx={styles.selectedInfo}>
-                            {city ? `Місто: ${city}` : 'Місто: не вибрано'}
+                            {city ? `Місто: ${city}` : 'Місто: -'}
                         </Typography>
                         {deliveryMethod ? (
                             <Typography variant="body2" sx={styles.selectedInfo}>
@@ -70,7 +70,7 @@ const CheckoutDeliverySelection = ({ deliveryMethods, cities }) => {
                             </Typography>
                         ) : (
                             <Typography variant="body2" sx={styles.selectedInfo}>
-                                Спосіб доставки: не вибрано
+                                Спосіб доставки: -
                             </Typography>
                         )}
                     </Box>

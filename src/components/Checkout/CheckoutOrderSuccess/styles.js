@@ -7,8 +7,8 @@ export const styles = {
     },
     summary: {
         display: 'flex',
-        flexDirection: 'row',
-        gap: '32px',
+        flexDirection: 'column',
+        gap: '20px',
         alignItems: 'center',
         padding: '16px',
         backgroundColor: '#fff',
@@ -17,13 +17,21 @@ export const styles = {
     },
     title: {
         fontWeight: 'bold',
-        marginBottom: '16px',
         fontSize: '24px',
     },
     section: {
         display: 'flex',
         alignItems: 'center',
         marginBottom: '16px',
+    },
+    infoSum: {
+        fontSize: '20px',
+        marginBottom: '16px',
+    },
+    bigIcon: {
+        fontSize: '220px',
+        color: '#4caf50',
+        marginBottom: '24px',
     },
     icon: {
         fontSize: '40px',
@@ -48,24 +56,13 @@ export const styles = {
     infoText: {
         fontSize: '14px',
     },
-    contactSection: {
-        marginTop: '24px',
-        textAlign: 'left',
-        width: '100%',
-    },
-    contactText: {
-        fontSize: '14px',
-        marginBottom: '8px',
-    },
-    contactInfo: {
+    sectionInfo: {
         display: 'flex',
-        alignItems: 'center',
-        marginBottom: '8px',
+        flexDirection: 'row',
     },
-    contactIcon: {
-        fontSize: '20px',
-        color: '#4caf50',
-        marginRight: '8px',
-    },
+    infoBox: {
+        display: 'flex',
+        flexDirection: 'row',
+        gap: '120px',
+    }
 };
-

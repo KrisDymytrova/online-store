@@ -18,28 +18,10 @@ export const styles = {
         marginBottom: '20px',
         width: '100%',
     },
-    checkbox: {
-        '&.Mui-checked': {
-            color: '#4caf50',
-        },
-    },
     checkboxField: {
         marginBottom: '20px',
         display: 'flex',
         alignItems: 'center',
-    },
-    anotherReceiver: {
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: '12px',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-    },
-    receiverField: {
-        flex: '1 1 calc(33.333% - 10px)',
-        boxSizing: 'border-box',
-        maxWidth: '300px',
-        width: '100%',
     },
     buttonBox: {
         display: 'flex',

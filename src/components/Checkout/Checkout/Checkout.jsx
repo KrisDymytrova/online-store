@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { Box, Link, Typography } from '@mui/material';
 import { KeyboardBackspace } from "@mui/icons-material";
 import { useNavigate } from 'react-router-dom';
@@ -10,19 +10,33 @@ import CheckoutPaymentMethod from '../CheckoutPaymentMethod';
 import CheckoutGiftCard from '../CheckoutGiftCard';
 import CheckoutComment from '../CheckoutComment';
 import CheckoutSummary from '../CheckoutSummary';
+import {
+    setCity,
+    setDeliveryMethod,
+    setPaymentMethod,
+    setComment,
+    setContactInfo,
+    placeOrderSuccess
+} from '../../../redux/slices/orderSlice';
 import { styles } from './styles';
 
 const Checkout = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
-    const { totalAmount, totalDiscount, finalAmount, cartCount } = useSelector(state => state.cart);
-    const items = useSelector(state => state.cart.items);
+    const {
+        totalAmount,
+        totalDiscount,
+        finalAmount,
+        cartCount,
+        items
+    } = useSelector(state => state.cart);
 
-    const [city, setCity] = useState('');
-    const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState(null);
-    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
-    const [discountCode, setDiscountCode] = useState('');
-    const [bonusCardNumber, setBonusCardNumber] = useState('');
+    const {
+        city,
+        paymentMethod,
+        deliveryMethod
+    } = useSelector(state => state.order);
 
     const deliveryMethods = [
         { id: '1', name: 'Самовивіз з магазину', price: 0, additionalInfo: true, image: 'src/assets/in-shop.svg' },
@@ -44,19 +58,19 @@ const Checkout = () => {
     const cities = ['Київ', 'Львів', 'Одеса', 'Харків'];
 
     const handleCityChange = (newCity) => {
-        setCity(newCity);
+        dispatch(setCity(newCity));
     };
 
     const handleDeliveryMethodChange = (method) => {
-        setSelectedDeliveryMethod(method);
+        dispatch(setDeliveryMethod(method));
     };
 
     const handlePaymentMethodChange = (method) => {
-        setSelectedPaymentMethod(method);
+        dispatch(setPaymentMethod(method));
     };
 
     const handleContactInfoSubmit = (values) => {
-        console.log('Contact Info Submitted:', values);
+        dispatch(setContactInfo(values));
     };
 
     const handleGiftCardSubmit = (code) => {
@@ -64,26 +78,21 @@ const Checkout = () => {
     };
 
     const handleCommentSubmit = (comment) => {
-        console.log('Order Comment Submitted:', comment);
-    };
-
-    const handleDiscountApply = (code) => {
-        setDiscountCode(code);
-    };
-
-    const handleBonusCardChange = (number) => {
-        setBonusCardNumber(number);
+        dispatch(setComment(comment));
     };
 
     const handleConfirmOrder = () => {
-        console.log('Order Confirmed');
+        dispatch(placeOrderSuccess({
+            // данные заказа
+        }));
+        navigate('/order-success');
     };
 
     const handleBackToShopping = () => {
         navigate('/');
     };
 
-    const deliveryCost = selectedDeliveryMethod ? selectedDeliveryMethod.price : 0;
+    const deliveryCost = deliveryMethod ? deliveryMethod.price : 0;
 
     return (
         <Box>
@@ -114,7 +123,7 @@ const Checkout = () => {
                     <Box>
                         <CheckoutPaymentMethod
                             paymentMethods={paymentMethods}
-                            selectedMethod={selectedPaymentMethod}
+                            selectedMethod={paymentMethod}
                             onPaymentMethodChange={handlePaymentMethodChange}
                         />
                     </Box>
@@ -129,13 +138,13 @@ const Checkout = () => {
                     <CheckoutSummary
                         cartCount={cartCount}
                         totalAmount={totalAmount}
-                        discountCode={discountCode}
-                        bonusCardNumber={bonusCardNumber}
+                        discountCode=""
+                        bonusCardNumber=""
                         totalDiscount={totalDiscount}
                         finalAmount={finalAmount}
                         deliveryCost={deliveryCost}
-                        onDiscountApply={handleDiscountApply}
-                        onBonusCardChange={handleBonusCardChange}
+                        onDiscountApply={() => {}}
+                        onBonusCardChange={() => {}}
                         onConfirmOrder={handleConfirmOrder}
                     />
                 </Box>

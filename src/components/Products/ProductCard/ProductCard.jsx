@@ -38,10 +38,14 @@ const ProductCard = ({
         navigate(`/product/${code}`);
     };
 
-    const handleAddToCartWithSnackbar = () => {
-        handleAddToCart();
-        setShowPopup(true);
-        showSnackbarWithMessage('Товар успішно доданий до кошика');
+    const handleAddToCartOrNavigate = () => {
+        if (isInCart) {
+            navigate('/shopping-cart');
+        } else {
+            handleAddToCart();
+            setShowPopup(true);
+            showSnackbarWithMessage('Товар успішно доданий до кошика');
+        }
     };
 
     const handleFavoriteToggle = () => {
@@ -101,9 +105,10 @@ const ProductCard = ({
                     <Button
                         variant="contained"
                         sx={styles.button}
-                        onClick={handleAddToCartWithSnackbar}
+                        onClick={handleAddToCartOrNavigate}
                         endIcon={isInCart ? <DoneAllOutlinedIcon sx={styles.iconCart}/> : <ShoppingCartIcon sx={styles.iconCart}/>}
-                    />
+                    >
+                    </Button>
                 </Box>
                 <Typography variant="body2" sx={styles.bonus}>+{bonus} ₴ на бонусний рахунок</Typography>
             </Box>

@@ -1,25 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Box, Typography, IconButton, Button } from '@mui/material';
-import { Close as CloseIcon, Add, Remove, CheckSharp } from '@mui/icons-material';
+import { Close as CloseIcon, CheckSharp } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { addItem } from '../../../redux/slices/cartSlice';
-import { styles } from './styles.js';
+import QuantitySelector from '../../UI/QuantitySelector';
+import { styles } from './styles';
 
 const CartPopup = ({ product, onClose }) => {
     const [quantity, setQuantity] = useState(1);
     const navigate = useNavigate();
     const popupRef = useRef(null);
     const dispatch = useDispatch();
-
-    const handleIncrease = () => {
-        setQuantity(prevQuantity => prevQuantity + 1);
-    };
-
-    const handleDecrease = () => {
-        setQuantity(prevQuantity => Math.max(1, prevQuantity - 1));
-    };
 
     const handleProductClick = () => {
         navigate(`/product/${product.code}`);
@@ -30,9 +23,9 @@ const CartPopup = ({ product, onClose }) => {
     };
 
     const handleAddToCart = () => {
-        dispatch(addItem({ ...product, quantity }));
+        dispatch(addItem({ ...product, quantity: quantity - 1 }));
         onClose();
-        navigate('/checkout');
+        navigate('/checkout', { state: { product, quantity } });
     };
 
     const totalOldPrice = (product.oldPrice * quantity).toFixed(2);
@@ -73,15 +66,10 @@ const CartPopup = ({ product, onClose }) => {
                             <Typography variant="body1">{product.title}</Typography>
                             <Typography variant="body2" color="textSecondary">Код: {product.code}</Typography>
                         </Box>
-                        <Box sx={styles.quantityContainer}>
-                            <IconButton onClick={handleDecrease} disabled={quantity <= 1} sx={styles.quantityButton}>
-                                <Remove />
-                            </IconButton>
-                            <Typography sx={styles.quantity}>{quantity}</Typography>
-                            <IconButton onClick={handleIncrease} sx={styles.quantityButton}>
-                                <Add />
-                            </IconButton>
-                        </Box>
+                        <QuantitySelector
+                            initialQuantity={quantity}
+                            onQuantityChange={setQuantity}
+                        />
                         <Box>
                             <Box sx={styles.productPrice}>
                                 <Typography variant="body2" sx={styles.oldPrice}>{totalOldPrice} ₴</Typography>

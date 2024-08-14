@@ -3,8 +3,10 @@ export const styles = {
         display: 'flex',
         flexDirection: 'row',
         padding: '16px',
+        maxHeight: '600px',
     },
     imageContainer: {
+        display: 'flex',
         flex: '0 0 50%',
         textAlign: 'center',
         padding: '16px',
@@ -13,6 +15,8 @@ export const styles = {
         width: '100%',
         maxWidth: '400px',
         height: 'auto',
+        objectFit: 'contain',
+        objectPosition: 'center',
     },
     infoContainer: {
         flex: '1',
@@ -136,4 +140,3 @@ export const styles = {
         flexDirection: 'column',
     }
 };
-

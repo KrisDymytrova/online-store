@@ -1,53 +1,34 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useFormik } from 'formik';
-import { TextField, Checkbox, FormControlLabel, Box, Typography } from '@mui/material';
+import { TextField, Box, Typography } from '@mui/material';
 import validationCheckoutContactForm from '../../../utils/validationSchemas/validationCheckoutContactForm.js';
+import InputMask from 'react-input-mask';
+import { useDispatch, useSelector } from 'react-redux';
+import { setContactInfo } from '../../../redux/slices/orderSlice';
 import CheckoutContinueButton from '../../UI/Buttons/CheckoutContinueButton';
 import CheckoutCollapsedButton from '../../UI/Buttons/CheckoutCollapsedButton';
 import { styles } from './styles';
-import InputMask from 'react-input-mask';
-import { useDispatch, useSelector } from 'react-redux';
-import { setContactInfo, setReceiverInfo } from '../../../redux/slices/orderSlice';
 
 const CheckoutContactInfo = ({ onSubmit }) => {
     const [isCollapsed, setIsCollapsed] = useState(true);
     const dispatch = useDispatch();
 
     const contactInfo = useSelector((state) => state.order.contactInfo);
-    const receiverInfo = useSelector((state) => state.order.receiverInfo);
 
     const formik = useFormik({
         initialValues: {
-            phoneNumber: '',
-            firstName: '',
-            email: '',
-            isAnotherReceiver: false,
-            receiverPhone: '',
-            receiverFirstName: '',
-            receiverLastName: '',
-            receiverPatronymic: '',
+            phoneNumber: contactInfo.phoneNumber || '',
+            firstName: contactInfo.firstName || '',
+            email: contactInfo.email || '',
         },
         validationSchema: validationCheckoutContactForm,
         onSubmit: (values) => {
-            console.log('Submitted values:', values);
-
-            dispatch(setContactInfo({ phoneNumber: values.phoneNumber, firstName: values.firstName, email: values.email }));
-
-            if (values.isAnotherReceiver) {
-                console.log('Saving receiverInfo:', {
-                    receiverPhone: values.receiverPhone,
-                    receiverFirstName: values.receiverFirstName,
-                    receiverLastName: values.receiverLastName,
-                    receiverPatronymic: values.receiverPatronymic
-                });
-                dispatch(setReceiverInfo({
-                    receiverPhone: values.receiverPhone,
-                    receiverFirstName: values.receiverFirstName,
-                    receiverLastName: values.receiverLastName,
-                    receiverPatronymic: values.receiverPatronymic
-                }));
-            }
+            dispatch(setContactInfo({
+                phoneNumber: values.phoneNumber,
+                firstName: values.firstName,
+                email: values.email
+            }));
 
             onSubmit(values);
             setIsCollapsed(true);
@@ -70,29 +51,15 @@ const CheckoutContactInfo = ({ onSubmit }) => {
                 </Typography>
                 <Box sx={styles.infoButton}>
                     <Box>
-                        {receiverInfo ? (
-                                <>
-                                    <Typography variant="body2" sx={styles.selectedInfo}>
-                                        {contactInfo.phoneNumber ? `Телефон: ${contactInfo.phoneNumber}` : 'Телефон: не указан'}
-                                    </Typography>
-                                    <Typography variant="body2" sx={styles.selectedInfo}>
-                                        {contactInfo.firstName ? `Ім'я: ${contactInfo.firstName}` : 'Ім\'я: не указано'}
-                                    </Typography>
-                                    <Typography variant="body2" sx={styles.selectedInfo}>
-                                        {contactInfo.email ? `E-mail: ${contactInfo.email}` : 'E-mail: не указан'}
-                                    </Typography>
-                                </>
-                        ) : (
-                            <>
-
-                                <Typography variant="body2" sx={styles.selectedInfo}>
-                                    {`Отримувач: ${receiverInfo.receiverFirstName} ${receiverInfo.receiverLastName} ${receiverInfo.receiverPatronymic}`}
-                                </Typography>
-                                <Typography variant="body2" sx={styles.selectedInfo}>
-                                    {`Телефон отримувача: ${receiverInfo.receiverPhone}`}
-                                </Typography>
-                            </>
-                        )}
+                        <Typography variant="body2" sx={styles.selectedInfo}>
+                            {contactInfo.phoneNumber ? `Телефон: ${contactInfo.phoneNumber}` : 'Телефон: -'}
+                        </Typography>
+                        <Typography variant="body2" sx={styles.selectedInfo}>
+                            {contactInfo.firstName ? `Ім'я: ${contactInfo.firstName}` : 'Ім\'я: -'}
+                        </Typography>
+                        <Typography variant="body2" sx={styles.selectedInfo}>
+                            {contactInfo.email ? `E-mail: ${contactInfo.email}` : 'E-mail: -'}
+                        </Typography>
                     </Box>
                     <CheckoutCollapsedButton onClick={handleChangeClick} />
                 </Box>
@@ -148,72 +115,6 @@ const CheckoutContactInfo = ({ onSubmit }) => {
                     sx={styles.inputField}
                 />
             </Box>
-            <FormControlLabel
-                control={
-                    <Checkbox
-                        name="isAnotherReceiver"
-                        checked={formik.values.isAnotherReceiver}
-                        onChange={formik.handleChange}
-                        sx={styles.checkbox}
-                    />
-                }
-                label="Отримувати буде інша людина"
-                sx={styles.checkboxField}
-            />
-            {formik.values.isAnotherReceiver && (
-                <Box sx={styles.anotherReceiver}>
-                    <InputMask
-                        mask="+380 99 999 99 99"
-                        value={formik.values.receiverPhone}
-                        onChange={formik.handleChange}
-                        maskChar={null}
-                    >
-                        {(inputProps) => (
-                            <TextField
-                                {...inputProps}
-                                fullWidth
-                                variant="outlined"
-                                label="Номер отримувача"
-                                name="receiverPhone"
-                                error={formik.touched.receiverPhone && Boolean(formik.errors.receiverPhone)}
-                                helperText={formik.touched.receiverPhone && formik.errors.receiverPhone}
-                                sx={styles.receiverField}
-                            />
-                        )}
-                    </InputMask>
-                    <TextField
-                        fullWidth
-                        variant="outlined"
-                        label="Ім'я"
-                        name="receiverFirstName"
-                        value={formik.values.receiverFirstName}
-                        onChange={formik.handleChange}
-                        error={formik.touched.receiverFirstName && Boolean(formik.errors.receiverFirstName)}
-                        helperText={formik.touched.receiverFirstName && formik.errors.receiverFirstName}
-                        sx={styles.receiverField}
-                    />
-                    <TextField
-                        fullWidth
-                        variant="outlined"
-                        label="Прізвище"
-                        name="receiverLastName"
-                        value={formik.values.receiverLastName}
-                        onChange={formik.handleChange}
-                        error={formik.touched.receiverLastName && Boolean(formik.errors.receiverLastName)}
-                        helperText={formik.touched.receiverLastName && formik.errors.receiverLastName}
-                        sx={styles.receiverField}
-                    />
-                    <TextField
-                        fullWidth
-                        variant="outlined"
-                        label="По батькові"
-                        name="receiverPatronymic"
-                        value={formik.values.receiverPatronymic}
-                        onChange={formik.handleChange}
-                        sx={styles.receiverField}
-                    />
-                </Box>
-            )}
             <Box sx={styles.buttonBox}>
                 <CheckoutContinueButton onClick={handleProceedClick} />
             </Box>

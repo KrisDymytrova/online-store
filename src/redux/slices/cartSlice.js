@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-// Функция загрузки данных из localStorage
 const loadCartFromLocalStorage = () => {
     const savedCart = localStorage.getItem('cartItems');
     if (savedCart) {
@@ -9,21 +8,17 @@ const loadCartFromLocalStorage = () => {
     return { items: [], totalAmount: 0, totalDiscount: 0, finalAmount: 0, cartCount: 0 };
 };
 
-// Изначальное состояние
 const initialState = loadCartFromLocalStorage();
 
-// Функция обновления итогов
 const updateTotals = (state) => {
     state.totalAmount = state.items.reduce((total, item) => total + (item.oldPrice * item.quantity), 0);
     state.totalDiscount = state.items.reduce((total, item) => total + ((item.oldPrice - item.newPrice) * item.quantity), 0);
     state.finalAmount = state.totalAmount - state.totalDiscount;
     state.cartCount = state.items.reduce((count, item) => count + item.quantity, 0);
 
-    // Сохранение в localStorage
     localStorage.setItem('cartItems', JSON.stringify(state));
 };
 
-// Слайс для корзины
 const cartSlice = createSlice({
     name: 'cart',
     initialState,

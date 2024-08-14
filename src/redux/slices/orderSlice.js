@@ -14,12 +14,7 @@ const initialState = {
         firstName: '',
         email: ''
     },
-    receiverInfo: JSON.parse(localStorage.getItem('receiverInfo')) || {
-        receiverPhone: '',
-        receiverFirstName: '',
-        receiverLastName: '',
-        receiverPatronymic: ''
-    },
+    orderTotal: JSON.parse(localStorage.getItem('orderTotal')) || 0,
 };
 
 const orderSlice = createSlice({
@@ -41,11 +36,6 @@ const orderSlice = createSlice({
             state.contactInfo = action.payload;
             localStorage.setItem('contactInfo', JSON.stringify(action.payload));
         },
-        setReceiverInfo: (state, action) => {
-            console.log('Reducer setting receiverInfo:', action.payload);
-            state.receiverInfo = action.payload;
-            localStorage.setItem('receiverInfo', JSON.stringify(action.payload));
-        },
         setDeliveryMethod: (state, action) => {
             state.deliveryMethod = action.payload;
             localStorage.setItem('deliveryMethod', JSON.stringify(action.payload));
@@ -66,21 +56,42 @@ const orderSlice = createSlice({
             state.noCall = action.payload;
             localStorage.setItem('noCall', JSON.stringify(action.payload));
         },
+        setOrderTotal: (state, action) => {
+            state.orderTotal = action.payload;
+            localStorage.setItem('orderTotal', JSON.stringify(action.payload));
+        },
+        clearOrderData: (state) => {
+            state.contactInfo = { phoneNumber: '', firstName: '', email: '' };
+            state.deliveryMethod = null;
+            state.paymentMethod = null;
+            state.city = '';
+            state.comment = '';
+            state.noCall = false;
+            state.orderTotal = 0;
+
+            localStorage.removeItem('contactInfo');
+            localStorage.removeItem('deliveryMethod');
+            localStorage.removeItem('paymentMethod');
+            localStorage.removeItem('city');
+            localStorage.removeItem('comment');
+            localStorage.removeItem('noCall');
+            localStorage.removeItem('orderTotal');
+        },
     },
 });
 
 export const {
-    setOrderDetails,
     setContactInfo,
-    setReceiverInfo,
     setDeliveryMethod,
     setCity,
     setPaymentMethod,
     setComment,
     setNoCall,
+    setOrderTotal,
     placeOrder,
     placeOrderSuccess,
-    placeOrderFailure
+    placeOrderFailure,
+    clearOrderData,
 } = orderSlice.actions;
 
 export default orderSlice.reducer;

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Typography } from '@mui/material';
+import {Box, Typography} from '@mui/material';
 import BaseTemplate from '../../templates/BaseTemplate';
 
 const NotFoundPage = () => {
@@ -15,10 +15,20 @@ const NotFoundPage = () => {
     }, [navigate]);
 
     return (
-        <BaseTemplate className={'not-found-page'}>
-            <Typography variant="h3" align="center" gutterBottom>
-                Page Not Found
-            </Typography>
+        <BaseTemplate
+            className="not-found-page"
+            showTopHeader={true}
+            showCartHeader={false}
+            showBottomHeader={true}
+            showTopFooter={true}
+            showMainFooter={true}
+            showBottomFooter={true}
+        >
+            <Box sx={{ height: '60vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <Typography variant="h3" align="center" gutterBottom>
+                    Page Not Found
+                </Typography>
+            </Box>
         </BaseTemplate>
     );
 };

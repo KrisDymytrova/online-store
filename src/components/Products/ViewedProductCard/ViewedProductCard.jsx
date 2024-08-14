@@ -33,10 +33,14 @@ const ViewedProductCard = ({
     const { showSnackbar, snackbarMessage, showSnackbarWithMessage, handleCloseSnackbar } = useSnackbar();
     const navigate = useNavigate();
 
-    const handleAddToCartWithSnackbar = () => {
-        handleAddToCart();
-        setShowPopup(true);
-        showSnackbarWithMessage('Товар успішно доданий до кошика');
+    const handleButtonClick = () => {
+        if (isInCart) {
+            navigate('/shopping-cart');
+        } else {
+            handleAddToCart();
+            setShowPopup(true);
+            showSnackbarWithMessage('Товар успішно доданий до кошика');
+        }
     };
 
     const handleProductClick = (code) => {
@@ -76,7 +80,7 @@ const ViewedProductCard = ({
                     <Button
                         variant="contained"
                         sx={styles.button}
-                        onClick={handleAddToCartWithSnackbar}
+                        onClick={handleButtonClick}
                         endIcon={isInCart ? <DoneAllOutlinedIcon sx={styles.iconCart} /> : <ShoppingCart sx={styles.iconCart} />}
                     />
                 </Box>

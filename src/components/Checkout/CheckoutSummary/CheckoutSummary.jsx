@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Box, Typography, Button, TextField, Checkbox, FormControlLabel, Divider } from '@mui/material';
 import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { deleteAllItems } from '../../../redux/slices/cartSlice';
+import { setOrderTotal } from '../../../redux/slices/orderSlice';
 import { styles } from './styles';
 
 const formatCurrency = (amount) => {
@@ -19,13 +20,19 @@ const CheckoutSummary = ({
                              totalDiscount,
                              finalAmount,
                              cartCount,
+                             deliveryCost,
                              onDiscountApply,
                              onBonusCardChange,
                              onConfirmOrder,
                          }) => {
     const [isConfirmed, setIsConfirmed] = useState(false);
+    const [isFormComplete, setIsFormComplete] = useState(false);
     const navigate = useNavigate();
-    const dispatch = useDispatch(); // Создаем экземпляр dispatch
+    const dispatch = useDispatch();
+    const orderTotalRedux = useSelector((state) => state.order.orderTotal);
+
+    const { items } = useSelector((state) => state.cart);
+    const { contactInfo, deliveryMethod, paymentMethod, city } = useSelector((state) => state.order);
 
     const formik = useFormik({
         initialValues: {
@@ -39,14 +46,33 @@ const CheckoutSummary = ({
     });
 
     const handleCheckboxChange = (event) => {
+        const newOrderTotal = finalAmount + deliveryCost;
         setIsConfirmed(event.target.checked);
+        dispatch(setOrderTotal(newOrderTotal));
     };
 
     const handleConfirmOrder = () => {
-        onConfirmOrder();
-        dispatch(deleteAllItems());
-        navigate('/order-success');
+        if (isFormComplete) {
+            onConfirmOrder();
+            dispatch(deleteAllItems());
+            navigate('/order-success');
+        }
     };
+
+    const orderTotal = orderTotalRedux || finalAmount + deliveryCost;
+
+    useEffect(() => {
+        const newOrderTotal = finalAmount + deliveryCost;
+        dispatch(setOrderTotal(newOrderTotal));
+    }, [finalAmount, deliveryCost, dispatch]);
+
+    useEffect(() => {
+        if (items.length > 0 && contactInfo && deliveryMethod && paymentMethod && city) {
+            setIsFormComplete(true);
+        } else {
+            setIsFormComplete(false);
+        }
+    }, [items, contactInfo, deliveryMethod, paymentMethod, city]);
 
     return (
         <Box sx={styles.summary}>
@@ -67,7 +93,6 @@ const CheckoutSummary = ({
                         variant="contained"
                         sx={styles.applyButton}
                         type="submit"
-                        onClick={() => formik.setFieldValue('promoCode', formik.values.promoCode)}
                     >
                         Застосувати
                     </Button>
@@ -85,7 +110,6 @@ const CheckoutSummary = ({
                         variant="contained"
                         sx={styles.applyButton}
                         type="submit"
-                        onClick={() => formik.setFieldValue('bonusCard', formik.values.bonusCard)}
                     >
                         <DoneOutlineIcon />
                     </Button>
@@ -122,20 +146,20 @@ const CheckoutSummary = ({
                     </Box>
                     <Box sx={styles.summaryText}>
                         <Typography>Доставка</Typography>
-                        <Typography sx={styles.price}>75.00 ₴</Typography>
+                        <Typography sx={styles.price}>{formatCurrency(deliveryCost)} ₴</Typography>
                     </Box>
                 </Box>
                 <Divider orientation="horizontal" sx={styles.divider} />
                 <Box sx={styles.totalText}>
                     <Typography variant="h6">Загальна сума</Typography>
-                    <Typography variant="h6" sx={styles.price}>{formatCurrency(finalAmount + 75.00)} ₴</Typography>
+                    <Typography variant="h6" sx={styles.price}>{formatCurrency(orderTotal)} ₴</Typography>
                 </Box>
             </Box>
             <Button
                 variant="contained"
                 sx={styles.checkoutButton}
                 onClick={handleConfirmOrder}
-                disabled={!isConfirmed}
+                disabled={!isConfirmed || !isFormComplete}
             >
                 Оформити замовлення
             </Button>
@@ -161,6 +185,7 @@ CheckoutSummary.propTypes = {
     totalDiscount: PropTypes.number.isRequired,
     finalAmount: PropTypes.number.isRequired,
     cartCount: PropTypes.number.isRequired,
+    deliveryCost: PropTypes.number.isRequired,
     onDiscountApply: PropTypes.func.isRequired,
     onBonusCardChange: PropTypes.func.isRequired,
     onConfirmOrder: PropTypes.func.isRequired,

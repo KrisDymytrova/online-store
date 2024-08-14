@@ -44,6 +44,14 @@ const CartProductsList = ({ items }) => {
         navigate(`/product/${code}`);
     };
 
+    const handleAddQuantity = (item) => {
+        dispatch(addItem({ code: item.code, quantity: 1 }));
+    };
+
+    const handleRemoveQuantity = (item) => {
+        dispatch(removeItem({ code: item.code }));
+    };
+
     return (
         <Box sx={styles.itemList}>
             <Box sx={styles.header}>
@@ -109,11 +117,11 @@ const CartProductsList = ({ items }) => {
                             </Box>
                         </Box>
                         <Box sx={styles.quantityContainer}>
-                            <IconButton onClick={() => dispatch(removeItem(item))} disabled={item.quantity <= 1} sx={styles.quantityButton}>
+                            <IconButton onClick={() => handleRemoveQuantity(item)} disabled={item.quantity <= 1} sx={styles.quantityButton}>
                                 <Remove />
                             </IconButton>
                             <Typography sx={styles.quantity}>{item.quantity}</Typography>
-                            <IconButton onClick={() => dispatch(addItem(item))} sx={styles.quantityButton}>
+                            <IconButton onClick={() => handleAddQuantity(item)} sx={styles.quantityButton}>
                                 <Add />
                             </IconButton>
                         </Box>

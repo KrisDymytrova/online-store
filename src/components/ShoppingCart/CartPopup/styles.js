@@ -74,21 +74,6 @@ export const styles = {
         textDecoration: 'line-through',
         color: '#888',
     },
-    quantityContainer: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginBottom: '16px',
-        marginRight: '16px',
-    },
-    quantityButton: {
-        padding: '8px',
-    },
-    quantity: {
-        padding: '0 16px',
-        textAlign: 'center',
-        width: '40px',
-    },
     popupActions: {
         display: 'flex',
         justifyContent: 'space-between',

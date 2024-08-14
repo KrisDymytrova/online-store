@@ -40,7 +40,7 @@ export const styles = {
         alignItems: 'center',
     },
     itemImage: {
-        width: '50px',
+        width: '80px',
         height: 'auto',
         marginRight: '30px',
         cursor: 'pointer'
@@ -113,8 +113,8 @@ export const styles = {
         justifyContent: 'space-between',
     },
     collapsedItemImage: {
-        width: '50px',
-        height: '50px',
+        width: '80px',
+        height: 'auto',
         objectFit: 'cover',
         margin: '0 10px',
         borderRadius: '8px',
