@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useGetProductsQuery } from '../../../redux/productsApi/productsApi.js';
 import ProductCard from '../../Products/ProductCard';
 import { Box, Button, Typography } from '@mui/material';
-import { styles } from './styles.js';
+import { styles } from './styles';
 
 const ProductList = () => {
     const { data: products, error, isLoading } = useGetProductsQuery();

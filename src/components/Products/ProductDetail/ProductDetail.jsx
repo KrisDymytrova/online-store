@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { addViewedProduct } from '../../../redux/slices/viewedProductsSlice';
 import CartPopup from '../../ShoppingCart/CartPopup';
 import ViewedProductsList from '../ViewedProductsList';
 import { Box, Typography, Button, IconButton, Divider, Snackbar } from '@mui/material';
@@ -23,15 +25,13 @@ const ProductDetail = ({
                            bonus,
                        }) => {
     const product = {
-        imageUrl,
-        code,
+        id: code,
+        image: imageUrl,
         title,
-        newPrice,
-        oldPrice,
-        discount,
-        quantity: 1,
+        price: newPrice,
     };
 
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const { isInCart, handleAddToCart } = useCart(product);
@@ -63,12 +63,13 @@ const ProductDetail = ({
     };
 
     useEffect(() => {
+        dispatch(addViewedProduct(product));
         window.scrollTo({
             top: 0,
             left: 0,
             behavior: 'auto',
         });
-    }, [code]);
+    }, [code, dispatch]);
 
     return (
         <Box>
@@ -109,7 +110,7 @@ const ProductDetail = ({
                             <Button
                                 variant="contained"
                                 sx={styles.buyButton}
-                                onClick={handleButtonClick} // изменено на handleButtonClick
+                                onClick={handleButtonClick}
                                 endIcon={isInCart ? <Check /> : <ShoppingCart />}
                             >
                                 {isInCart ? 'В кошику' : 'Купити'}

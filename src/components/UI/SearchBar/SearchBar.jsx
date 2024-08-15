@@ -1,9 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { InputBase, IconButton, List, ListItem, ListItemText, Paper, InputAdornment, ListItemAvatar, Avatar } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import {
+    InputBase,
+    IconButton,
+    List,
+    ListItem,
+    ListItemText,
+    Paper,
+    InputAdornment,
+    ListItemAvatar,
+    Avatar,
+    Box
+} from '@mui/material';
 import { Search } from '@mui/icons-material';
 import { useGetProductsQuery } from '../../../redux/productsApi/productsApi.js';
-import { styles } from './styles.js';
-import { useNavigate } from 'react-router-dom';
+import { styles } from './styles';
 
 const SearchBar = () => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -52,7 +63,7 @@ const SearchBar = () => {
     };
 
     return (
-        <div ref={searchRef} style={styles.searchBar}>
+        <Box ref={searchRef} style={styles.searchBar}>
             <InputBase
                 placeholder="Пошук товарів"
                 value={searchTerm}
@@ -89,7 +100,7 @@ const SearchBar = () => {
                     </List>
                 </Paper>
             )}
-        </div>
+        </Box>
     );
 };
 

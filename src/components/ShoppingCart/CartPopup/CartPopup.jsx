@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Box, Typography, IconButton, Button } from '@mui/material';
 import { Close as CloseIcon, CheckSharp } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addItem } from '../../../redux/slices/cartSlice';
 import QuantitySelector from '../../UI/QuantitySelector';
 import { styles } from './styles';
@@ -13,6 +13,7 @@ const CartPopup = ({ product, onClose }) => {
     const navigate = useNavigate();
     const popupRef = useRef(null);
     const dispatch = useDispatch();
+    const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
     const handleProductClick = () => {
         navigate(`/product/${product.code}`);
@@ -66,10 +67,12 @@ const CartPopup = ({ product, onClose }) => {
                             <Typography variant="body1">{product.title}</Typography>
                             <Typography variant="body2" color="textSecondary">Код: {product.code}</Typography>
                         </Box>
-                        <QuantitySelector
-                            initialQuantity={quantity}
-                            onQuantityChange={setQuantity}
-                        />
+                        {isAuthenticated && (
+                            <QuantitySelector
+                                initialQuantity={quantity}
+                                onQuantityChange={setQuantity}
+                            />
+                        )}
                         <Box>
                             <Box sx={styles.productPrice}>
                                 <Typography variant="body2" sx={styles.oldPrice}>{totalOldPrice} ₴</Typography>
@@ -83,7 +86,9 @@ const CartPopup = ({ product, onClose }) => {
                 <Button sx={styles.continueButton} variant="outlined" onClick={onClose}>Продовжити покупки</Button>
                 <Box>
                     <Button sx={styles.goToCartButton} variant="contained" onClick={handleGoToCart}>Перейти до кошика</Button>
-                    <Button sx={styles.makeOrderButton} variant="outlined" onClick={handleAddToCart}>Оформити замовлення</Button>
+                    {isAuthenticated && (
+                        <Button sx={styles.makeOrderButton} variant="outlined" onClick={handleAddToCart}>Оформити замовлення</Button>
+                    )}
                 </Box>
             </Box>
         </Box>
@@ -94,7 +99,7 @@ CartPopup.propTypes = {
     product: PropTypes.shape({
         imageUrl: PropTypes.string.isRequired,
         title: PropTypes.string.isRequired,
-        code: PropTypes.string.isRequired,
+        code: PropTypes.number.isRequired,
         newPrice: PropTypes.number.isRequired,
         oldPrice: PropTypes.number.isRequired,
     }).isRequired,

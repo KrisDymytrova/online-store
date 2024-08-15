@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { Box, Typography, IconButton, Button } from '@mui/material';
 import { Delete, Add, Remove, FavoriteBorder, Favorite, CheckSharp } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { addItem, removeItem, deleteItem, deleteAllItems } from '../../../redux/slices/cartSlice';
 import { addFavorite, removeFavorite } from '../../../redux/slices/favoritesSlice';
 import DeleteAllItemsPopup from '../DeleteAllItemsPopup';

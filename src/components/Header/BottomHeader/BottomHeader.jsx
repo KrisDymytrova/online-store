@@ -8,7 +8,7 @@ import SearchBar from '../../UI/SearchBar';
 import CategoriesDropdown from '../../Categories/CategoriesDropdown';
 import AuthModal from '../../Auth/AuthModal';
 import ProfileDropdown from '../../UserProfile/ProfileDropdown';
-import { styles } from './styles.js';
+import { styles } from './styles';
 
 const BottomHeader = () => {
     const [openAuthModal, setOpenAuthModal] = useState(false);

@@ -10,6 +10,11 @@ export const styles = {
         textAlign: 'center',
         margin: '200px auto',
     },
+    headerAuth: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
     text: {
         fontSize: '24px',
         fontWeight: 'bold',

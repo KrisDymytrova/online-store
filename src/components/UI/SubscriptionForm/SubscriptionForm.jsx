@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { Box, Button, TextField, Typography } from '@mui/material';
 import { Formik, Form, Field } from 'formik';
-import PropTypes from 'prop-types';
 import * as Yup from 'yup';
-import { styles } from './styles.js';
+import { styles } from './styles';
 
 const SubscriptionForm = ({ onSubmit }) => {
     const [submitted, setSubmitted] = useState(false);

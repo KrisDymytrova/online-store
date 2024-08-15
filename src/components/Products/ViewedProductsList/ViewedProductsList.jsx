@@ -1,16 +1,11 @@
 import React from 'react';
-import { useGetProductsQuery } from '../../../redux/productsApi/productsApi.js';
+import { useSelector } from 'react-redux';
 import { Box } from '@mui/material';
 import ViewedProductCard from '../ViewedProductCard';
 import { styles } from './styles';
 
 const ViewedProductsList = () => {
-    const { data: products, error, isLoading } = useGetProductsQuery();
-
-    if (isLoading) return <div>Loading...</div>;
-    if (error) return <div>Error loading products</div>;
-
-    const viewedProducts = products.slice(0, 6);
+    const viewedProducts = useSelector((state) => state.viewedProducts.viewedProducts);
 
     return (
         <Box sx={styles.viewedProducts}>

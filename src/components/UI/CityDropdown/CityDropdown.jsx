@@ -1,7 +1,7 @@
-import React from 'react';
-import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import React from 'react'
 import PropTypes from 'prop-types';
-import { styles } from './styles.js';
+import { FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { styles } from './styles';
 
 const CityDropdown = ({ cities, selectedCity, handleChange }) => {
     return (
@@ -33,4 +33,3 @@ CityDropdown.propTypes = {
 };
 
 export default CityDropdown;
-

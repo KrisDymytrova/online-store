@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { Carousel } from 'react-bootstrap';
 import { styles } from './styles';
 
-
 const BannerCarousel = ({ banners }) => {
     return (
         <div style={styles.carouselContainer}>

@@ -1,9 +1,10 @@
 export const styles = {
     viewedProducts: {
         display: 'flex',
-        justifyContent: 'space-between',
+        justifyContent: 'flex-start',
+        alignSelf: 'center',
         overflowX: 'auto',
-        gap: '10px',
+        gap: '15px',
         padding: '10px 0',
     },
     productCard: {
