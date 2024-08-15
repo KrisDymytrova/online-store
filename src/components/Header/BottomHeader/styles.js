@@ -3,6 +3,8 @@ export const styles = {
         position: 'static',
         backgroundColor: '#4caf50',
         boxShadow: 'none',
+        zIndex: 1100,
+        transition: 'position 0.3s ease',
     },
     toolbar: {
         display: 'flex',
@@ -38,7 +40,7 @@ export const styles = {
     badge: {
         '& .css-dlwkee-MuiBadge-badge': {
             backgroundColor: '#ff6f00',
-}
+        },
     },
     amountText: {
         color: '#fff',

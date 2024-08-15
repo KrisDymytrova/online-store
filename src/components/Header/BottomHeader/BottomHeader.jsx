@@ -12,6 +12,7 @@ import { styles } from './styles';
 
 const BottomHeader = () => {
     const [openAuthModal, setOpenAuthModal] = useState(false);
+    const [isSticky, setIsSticky] = useState(false);
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -46,9 +47,24 @@ const BottomHeader = () => {
         dispatch(logout());
     };
 
+    const handleScroll = () => {
+        if (window.scrollY > 100) {
+            setIsSticky(true);
+        } else {
+            setIsSticky(false);
+        }
+    };
+
+    useEffect(() => {
+        window.addEventListener('scroll', handleScroll);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
+
     return (
         <>
-            <AppBar sx={styles.appBar}>
+            <AppBar sx={{ ...styles.appBar, position: isSticky ? 'fixed' : 'static', top: isSticky ? 0 : 'auto' }}>
                 <Toolbar sx={styles.toolbar}>
                     <Box>
                         <CategoriesDropdown onSelectCategory={handleSelectCategory} />
@@ -84,6 +100,7 @@ const BottomHeader = () => {
                 </Toolbar>
             </AppBar>
             <AuthModal open={openAuthModal} onClose={handleAuthModalClose} />
+            {isSticky && <Box sx={{ height: '64px' }} />}
         </>
     );
 };

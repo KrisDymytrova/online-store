@@ -6,6 +6,9 @@ const routeNames = {
     shoppingCartPage: '/shopping-cart',
     checkoutPage: '/checkout',
     orderSuccessPage: '/order-success',
+    profilePage: '/profile',
+    ordersPage: '/orders',
+    personalDataPage: '/personal-data',
     notFoundPage: '*'
 }
 

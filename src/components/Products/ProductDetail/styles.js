@@ -3,7 +3,7 @@ export const styles = {
         display: 'flex',
         flexDirection: 'row',
         padding: '16px',
-        maxHeight: '700px',
+        maxHeight: '800px',
     },
     imageContainer: {
         display: 'flex',
